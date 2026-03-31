@@ -19,3 +19,10 @@ test-results/
 .claw/workspace/state.json
 *.log
 logs/
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+
+# TypeScript
+*.tsbuildinfo

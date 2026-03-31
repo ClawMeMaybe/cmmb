@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  VIEWER
+}
+
+enum InstanceStatus {
+  ONLINE
+  OFFLINE
+  STARTING
+  STOPPING
+  ERROR
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  instances  Instance[]
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+model Instance {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  status      InstanceStatus @default(OFFLINE)
+  gatewayUrl  String
+  token       String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  createdById String
+  createdBy  User @relation(fields: [createdById], references: [id])
+
+  auditLogs AuditLog[]
+
+  @@map("instances")
+}
+
+model AuditLog {
+  id         String                      @id @default(cuid())
+  action     String
+  entityType String
+  entityId   String
+  details    Json?
+  createdAt  DateTime                    @default(now())
+
+  userId     String
+  user       User   @relation(fields: [userId], references: [id])
+
+  instanceId String?
+  instance   Instance? @relation(fields: [instanceId], references: [id])
+
+  @@map("audit_logs")
+}
