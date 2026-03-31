@@ -9,9 +9,20 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-// Health check response
-export interface HealthCheckResponse {
+// Health check types
+export interface HealthCheckResult {
+  status: "ok" | "error" | "pending" | "skipped";
+  message?: string;
+}
+
+export interface HealthCheckDetail {
   status: "ok" | "error";
   timestamp: string;
   version?: string;
+  checks: {
+    database: HealthCheckResult;
+    gateway?: HealthCheckResult;
+  };
 }
+
+export type HealthCheckResponse = HealthCheckDetail;
