@@ -2,11 +2,11 @@
 
 ## Environments
 
-| Environment | Purpose | Deployment |
-|-------------|---------|------------|
-| Preview | PR validation | GitHub Actions auto-deploy |
-| Dev | Development | Remote machine Docker |
-| Prod | Production | TBD (Phase 2) |
+| Environment | Purpose       | Deployment                 |
+| ----------- | ------------- | -------------------------- |
+| Preview     | PR validation | GitHub Actions auto-deploy |
+| Dev         | Development   | Remote machine Docker      |
+| Prod        | Production    | TBD (Phase 2)              |
 
 ## Preview Deployment
 

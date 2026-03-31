@@ -28,11 +28,13 @@
 ## 记忆更新规则
 
 ✅ **可追加**:
+
 - `.claw/memory/conventions/api.md`
 - `.claw/memory/conventions/database.md`
 - `.claw/memory/domain-knowledge.md`
 
 ❌ **禁止修改**:
+
 - `architecture.md`
 - `changelog.md`
 - `state.json`
@@ -41,6 +43,7 @@
 
 ```markdown
 ## v[N.X] (YYYY-MM-DD) - issue-#[N] 新增
+
 - [新发现的规范或模式]
 <!-- source: issue-#[N] -->
 ```
@@ -48,6 +51,7 @@
 ## 完成汇报
 
 完成后向主 Agent 汇报：
+
 - 任务完成状态
 - 创建的 PR 编号
 - Memory 更新内容摘要

@@ -31,15 +31,19 @@ Development complete -> Create PR -> CI auto-check -> Human Review -> Approve ->
 
 ```markdown
 ## Summary
+
 - Brief description of what this PR does
 
 ## Related Issue
+
 - Closes #123
 
 ## How to Test
+
 - Steps to verify this change
 
 ## Screenshots (if applicable)
+
 - UI changes should include screenshots
 ```
 
