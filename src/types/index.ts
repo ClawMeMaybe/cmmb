@@ -26,3 +26,16 @@ export interface HealthCheckDetail {
 }
 
 export type HealthCheckResponse = HealthCheckDetail;
+
+// Skill types
+export interface SkillMetadata {
+  name: string;
+  description: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface Skill extends SkillMetadata {
+  location: string;
+  enabled: boolean;
+  content?: string;
+}
