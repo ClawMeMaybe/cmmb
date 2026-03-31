@@ -1,23 +1,32 @@
-# 变更日志
+# Changelog
 
-## v1.1 (2026-03-31) - 主 Agent 配置改造
+## v1.2 (2026-03-31) - Skills & Metrics Tracking
 
-- 记忆分层结构：conventions/ 目录拆分（react/api/database/styling/git）
-- 心跳主动检查机制配置（Issues/子代理/PR/Memory）
-- 子代理模板创建（frontend/backend/tech-lead/devops/qa）
-- Issue 状态流转定义
-- 记忆版本标记机制
-- state.json 状态追踪结构升级
+- Added 5 skills to project: github, gh-issues, coding-agent, tmux, skill-creator
+- Created post-issue review process (workflows/post-issue-review.md)
+- Initialized metrics tracking (memory/metrics-log.md)
+- Updated heartbeat to include skill optimization checks
+- Skills synced to GitHub as project state
+<!-- source: skill-setup -->
+
+## v1.1 (2026-03-31) - Main Agent Configuration
+
+- Memory layered structure: conventions/ directory split (react/api/database/styling/git)
+- Heartbeat active check mechanism (Issues/Subagents/PRs/Memory)
+- Subagent templates created (frontend/backend/tech-lead/devops/qa)
+- Issue state flow defined
+- Memory version tagging mechanism
+- state.json state tracking structure upgraded
 <!-- source: workspace-setup -->
 
-## v1.0 (2026-03-31) - 项目初始化
+## v1.0 (2026-03-31) - Project Initialization
 
-- 项目文档创建
-- 确定技术栈: Next.js + TypeScript + MySQL + Prisma
-- 确定 AI-native 开发模式
-- 确定 OpenClaw DevOps 进化策略
-- 创建 `.claw/` 目录结构
-- 创建 6 个 Agent 角色定义
-- 创建初始记忆文件（架构、规范、领域知识）
-- 创建项目文档（PROJECT.md, PLAN.md, AI-DEV-GUIDE.md, README-DEVOPS.md）
+- Project docs created
+- Tech stack: Next.js + TypeScript + MySQL + Prisma
+- AI-native development mode defined
+- OpenClaw DevOps evolution strategy defined
+- `.claw/` directory structure created
+- 6 Agent role definitions created
+- Initial memory files created (architecture, conventions, domain-knowledge)
+- Project docs created (PROJECT.md, PLAN.md, AI-DEV-GUIDE.md, README-DEVOPS.md)
 <!-- source: initial -->

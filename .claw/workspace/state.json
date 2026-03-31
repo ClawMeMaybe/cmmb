@@ -2,7 +2,7 @@
   "project": "ClawMeMaybe",
   "phase": "Phase 0 - Infrastructure Setup",
   "currentSprint": null,
-  "lastUpdated": "2026-03-31T18:15:00+08:00",
+  "lastUpdated": "2026-03-31T18:42:00+08:00",
   "status": "ready",
 
   "issues": {
@@ -19,26 +19,41 @@
   },
 
   "memory": {
-    "version": "1.1",
-    "lastSync": "2026-03-31T18:15:00+08:00",
+    "version": "1.2",
+    "lastSync": "2026-03-31T18:42:00+08:00",
     "updatesPending": []
   },
 
+  "skills": {
+    "installed": ["github", "gh-issues", "coding-agent", "tmux", "skill-creator"],
+    "custom": []
+  },
+
+  "metrics": {
+    "totalIssuesCompleted": 0,
+    "avgDuration": null,
+    "totalTokens": 0,
+    "avgIterations": null
+  },
+
   "pendingTasks": [
-    "创建 GitHub Project Board (Kanban)",
-    "验证 Claude Code 开发环境",
-    "开始 Phase 1 Boilerplate"
+    "Provide GitHub Token for gh CLI",
+    "Delete existing issues and create new ones",
+    "Start Phase 1 Boilerplate"
   ],
 
   "completedTasks": [
-    "项目文档创建",
-    ".claw/ 目录结构创建",
-    "Agent 角色定义创建",
-    "初始记忆文件创建",
-    "工作流定义创建",
-    "子代理模板创建",
-    "记忆分层结构改造",
-    "主 Agent 心跳配置",
-    "Issue 状态流转定义"
+    "Project docs created",
+    ".claw/ directory structure created",
+    "Agent role definitions created",
+    "Initial memory files created",
+    "Workflow definitions created",
+    "Subagent templates created",
+    "Memory layered structure refactored",
+    "Main Agent heartbeat configured",
+    "Issue state flow defined",
+    "Skills added (github, gh-issues, coding-agent, tmux, skill-creator)",
+    "Post-issue review process defined",
+    "Metrics tracking initialized"
   ]
 }
