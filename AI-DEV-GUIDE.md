@@ -36,6 +36,7 @@ This project adopts an AI-native development mode, where the OpenClaw multi-Agen
 ### Agent Memory Evolution Mechanism
 
 As the project progresses, OpenClaw continuously accumulates project context:
+
 1. **Architecture Decisions** -> Recorded in `memory/architecture.md`
 2. **Code Standards** -> Recorded in `memory/conventions.md`
 3. **Domain Knowledge** -> Recorded in `memory/domain-knowledge.md`
@@ -46,31 +47,37 @@ These memory files are committed along with the code. A new OpenClaw clone can q
 ## Role Definitions
 
 ### PM / Architect Agent
+
 - Break down requirements into Epic -> Story -> Task
 - Architecture design and technical decisions
 - Task assignment to GitHub Kanban
 
 ### Tech Lead Agent
+
 - PR Review
 - Code quality assurance
 - Technical solution review
 
 ### Frontend Dev Agent
+
 - UI component development
 - Page interaction implementation
 - Styling and responsiveness
 
 ### Backend Dev Agent
+
 - API development
 - Database operations
 - Business logic implementation
 
 ### DevOps Agent
+
 - CI/CD configuration
 - Docker deployment
 - Environment management
 
 ### QA Agent
+
 - Unit test writing
 - E2E testing
 - Quality assurance
@@ -84,7 +91,9 @@ Requirement Confirmation -> Issue Creation -> Task Assignment -> Development -> 
 ## Development Standards
 
 ### Commit Message
+
 Follow Conventional Commits:
+
 ```
 <type>(<scope>): <description>
 
@@ -94,11 +103,13 @@ docs(readme): update setup instructions
 ```
 
 ### PR Standards
+
 - Each PR corresponds to one Issue
 - PR description includes: change content, test method, screenshots (if applicable)
 - Must pass CI checks
 
 ### Code Style
+
 - TypeScript strict mode
 - ESLint + Prettier
 - Components use functional style + Hooks
@@ -106,11 +117,13 @@ docs(readme): update setup instructions
 ## Claude Code Usage Guide
 
 ### Environment
+
 - User: `claude` (switch via `su - claude`)
 - Permissions: All permissions except root
 - Command: `claude --dangerously-skip-permissions`
 
 ### Best Practices
+
 1. Read Issue description and acceptance criteria first
 2. Understand existing code structure
 3. Small commits, frequent commits

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword, createSession } from "@/lib/auth";
+import { createAuditLog, AuditActions, EntityTypes } from "@/lib/audit";
 import type { ApiResponse } from "@/types";
 
 // Define a safe user type for API responses (without password)
@@ -32,6 +33,15 @@ export async function POST(
     });
 
     if (!user) {
+      // Log failed login attempt
+      await createAuditLog({
+        action: AuditActions.LOGIN_FAILED,
+        entityType: EntityTypes.USER,
+        entityId: "unknown",
+        userId: "unknown",
+        details: { email, reason: "user_not_found" },
+      }).catch(console.error);
+
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
@@ -41,6 +51,15 @@ export async function POST(
     const isValid = await verifyPassword(password, user.password);
 
     if (!isValid) {
+      // Log failed login attempt
+      await createAuditLog({
+        action: AuditActions.LOGIN_FAILED,
+        entityType: EntityTypes.USER,
+        entityId: user.id,
+        userId: user.id,
+        details: { email, reason: "invalid_password" },
+      }).catch(console.error);
+
       return NextResponse.json(
         { error: "Invalid credentials" },
         { status: 401 }
@@ -48,6 +67,15 @@ export async function POST(
     }
 
     await createSession(user.id);
+
+    // Log successful login
+    await createAuditLog({
+      action: AuditActions.LOGIN,
+      entityType: EntityTypes.SESSION,
+      entityId: user.id,
+      userId: user.id,
+      details: { email, loginMethod: "password" },
+    }).catch(console.error);
 
     return NextResponse.json({
       data: {

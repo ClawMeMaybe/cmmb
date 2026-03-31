@@ -2,149 +2,50 @@
   "project": "ClawMeMaybe",
   "phase": "Phase 1 - Development",
   "currentSprint": {
-    "number": 1,
+    "number": 2,
     "startDate": "2026-03-31",
-    "endDate": "2026-04-06",
-    "goals": ["#10", "#12", "#13"]
+    "goals": ["#22", "#11", "#14"]
   },
-  "lastUpdated": "2026-03-31T21:14:00+08:00",
+  "lastUpdated": "2026-03-31T21:43:00+08:00",
   "status": "in-progress",
+  "mode": "auto",
 
   "issues": {
-    "backlog": [11, 14],
-    "ready": [11],
-    "inProgress": [10, 12, 13],
-    "review": [],
-    "done": [9, 16]
+    "backlog": [23, 24],
+    "ready": [23, 24],
+    "inProgress": [22, 14],
+    "review": [11],
+    "done": [9, 10, 12, 13, 16]
   },
 
   "issueDetails": {
-    "9": {
-      "title": "Initialize Next.js Project Boilerplate",
-      "priority": "P0",
-      "type": "devops",
-      "status": "done",
-      "pr": 15,
-      "completedAt": "2026-03-31T19:11:00+08:00"
-    },
-    "10": {
-      "title": "Research OpenClaw Gateway + Token Management",
-      "priority": "P1",
-      "type": "research",
-      "status": "in-progress",
-      "agent": "subagent:baf25ebb-625c-443d-b9c5-253a74227f0b",
-      "startedAt": "2026-03-31T21:07:00+08:00"
-    },
-    "11": {
-      "title": "Monitoring Dashboard",
-      "priority": "P2",
-      "type": "frontend",
-      "status": "ready"
-    },
-    "12": {
-      "title": "Instance CRUD Management",
-      "priority": "P1",
-      "type": "fullstack",
-      "status": "in-progress",
-      "agent": "subagent:1f446e42-44cc-4ecd-810b-4ec05f0ef43a",
-      "startedAt": "2026-03-31T21:14:00+08:00"
-    },
-    "13": {
-      "title": "Admin Login Page and Authentication",
-      "priority": "P1",
-      "type": "fullstack",
-      "status": "in-progress",
-      "agent": "subagent:c45d6e1d-3ce0-46fc-8e86-f772ea57e45e",
-      "startedAt": "2026-03-31T21:08:00+08:00"
-    },
-    "14": {
-      "title": "Audit Log System",
-      "priority": "P3",
-      "type": "backend",
-      "status": "backlog"
-    },
-    "16": {
-      "title": "Replace Chinese text with English",
-      "priority": "P2",
-      "type": "chore",
-      "status": "done",
-      "pr": 18,
-      "completedAt": "2026-03-31T20:50:00+08:00"
-    }
+    "9": { "title": "Initialize Next.js Project Boilerplate", "status": "done" },
+    "10": { "title": "Research OpenClaw Gateway + Token Management", "status": "done" },
+    "11": { "title": "Monitoring Dashboard", "status": "review", "pr": 25 },
+    "12": { "title": "Instance CRUD Management", "status": "done" },
+    "13": { "title": "Admin Login Page and Authentication", "status": "done" },
+    "14": { "title": "Audit Log System", "status": "in-progress", "agent": "subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7" },
+    "16": { "title": "Replace Chinese text with English", "status": "done" },
+    "22": { "title": "Instance Start/Stop Actions", "status": "in-progress", "agent": "subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9" },
+    "23": { "title": "Deployment Validation and Production Setup", "status": "ready" },
+    "24": { "title": "E2E Testing with Playwright", "status": "ready" }
   },
 
   "subagents": {
     "active": [
-      {
-        "sessionKey": "agent:main:subagent:baf25ebb-625c-443d-b9c5-253a74227f0b",
-        "issue": 10,
-        "label": "issue-10-research-gateway",
-        "type": "research",
-        "role": "pm-architect",
-        "startedAt": "2026-03-31T21:07:00+08:00"
-      },
-      {
-        "sessionKey": "agent:main:subagent:c45d6e1d-3ce0-46fc-8e86-f772ea57e45e",
-        "issue": 13,
-        "label": "issue-13-auth-implementation",
-        "type": "fullstack",
-        "role": "backend-dev",
-        "startedAt": "2026-03-31T21:08:00+08:00"
-      },
-      {
-        "sessionKey": "agent:main:subagent:1f446e42-44cc-4ecd-810b-4ec05f0ef43a",
-        "issue": 12,
-        "label": "issue-12-instance-crud",
-        "type": "fullstack",
-        "role": "backend-dev",
-        "startedAt": "2026-03-31T21:14:00+08:00"
-      },
-      {
-        "sessionKey": "agent:main:subagent:37538550-187b-4bd2-8d75-f14a092755a6",
-        "issue": null,
-        "label": "standup-2026-03-31",
-        "type": "ceremony",
-        "role": "tech-lead",
-        "startedAt": "2026-03-31T21:14:00+08:00"
-      }
-    ],
-    "completed": [],
-    "history": []
-  },
-
-  "ceremonies": {
-    "lastStandup": null,
-    "lastPlanning": null,
-    "lastGrooming": null,
-    "lastReview": null,
-    "lastRetro": null,
-    "nextStandup": "2026-04-01T09:00:00+08:00",
-    "nextPlanning": "2026-04-01T09:00:00+08:00"
+      { "sessionKey": "agent:main:subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9", "issue": 22 },
+      { "sessionKey": "agent:main:subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7", "issue": 14 }
+    ]
   },
 
   "capacity": {
     "max": 3,
-    "used": 3,
-    "available": 0
+    "used": 2,
+    "available": 1
   },
 
   "metrics": {
-    "sprint": {
-      "issuesCompleted": 2,
-      "issuesInProgress": 3,
-      "issuesRemaining": 2,
-      "velocity": null
-    },
-    "overall": {
-      "totalIssuesCompleted": 2,
-      "totalPRsMerged": 2,
-      "avgTimePerIssue": null,
-      "ciPassRate": 100
-    }
-  },
-
-  "memory": {
-    "version": "1.4",
-    "lastSync": "2026-03-31T21:14:00+08:00"
+    "sprint1": { "issuesCompleted": 5, "prsMerged": 5 },
+    "sprint2": { "issuesCompleted": 0, "issuesInReview": 1, "issuesInProgress": 2 }
   }
 }

@@ -5,13 +5,13 @@
 **Sprint Duration:** 1 week (Monday - Sunday)
 **Ceremony Schedule:**
 
-| Ceremony | Frequency | Agent Lead | Duration |
-|----------|-----------|------------|----------|
-| Sprint Planning | Every Monday 09:00 | PM/Architect | 30 min |
-| Daily Standup | Every 09:00 | Tech Lead | 5 min |
-| Backlog Grooming | Wednesday 14:00 | PM/Architect | 15 min |
-| Sprint Review | Friday 17:00 | Tech Lead | 20 min |
-| Retrospective | Friday 17:30 | All | 10 min |
+| Ceremony         | Frequency          | Agent Lead   | Duration |
+| ---------------- | ------------------ | ------------ | -------- |
+| Sprint Planning  | Every Monday 09:00 | PM/Architect | 30 min   |
+| Daily Standup    | Every 09:00        | Tech Lead    | 5 min    |
+| Backlog Grooming | Wednesday 14:00    | PM/Architect | 15 min   |
+| Sprint Review    | Friday 17:00       | Tech Lead    | 20 min   |
+| Retrospective    | Friday 17:30       | All          | 10 min   |
 
 ## Ceremony Details
 
@@ -21,6 +21,7 @@
 **Spawn:** `pm-architect` agent
 
 **Tasks:**
+
 1. Review open issues with `ready-for-dev` label
 2. Prioritize by: P0 > P1 > P2 > P3
 3. Assign sprint capacity (max 3 concurrent issues)
@@ -28,6 +29,7 @@
 5. Comment on sprint-start issue with plan
 
 **Output:**
+
 ```json
 {
   "sprint": {
@@ -45,6 +47,7 @@
 **Spawn:** `tech-lead` agent
 
 **Tasks:**
+
 1. Check all `in-progress` issues
 2. Report status for each active subagent
 3. Identify blockers (issues stuck > 2h without progress)
@@ -52,6 +55,7 @@
 5. Post standup summary to GitHub Discussion or comment
 
 **Output format:**
+
 ```
 ## Standup 2026-03-31
 
@@ -77,6 +81,7 @@
 **Spawn:** `pm-architect` agent
 
 **Tasks:**
+
 1. Review unassigned issues
 2. Add acceptance criteria if missing
 3. Estimate complexity (S/M/L)
@@ -84,6 +89,7 @@
 5. Re-prioritize based on dependencies
 
 **Labels for sizing:**
+
 - `size/S` - < 4 hours
 - `size/M` - 4-8 hours
 - `size/L` - > 8 hours (should be split)
@@ -94,6 +100,7 @@
 **Spawn:** `tech-lead` agent
 
 **Tasks:**
+
 1. List completed issues this sprint
 2. Calculate velocity (issues completed)
 3. Review merged PRs
@@ -101,6 +108,7 @@
 5. Generate metrics report
 
 **Output:**
+
 ```
 ## Sprint 1 Review
 
@@ -128,6 +136,7 @@
 **Spawn:** `pm-architect` agent (collects input from all)
 
 **Tasks:**
+
 1. Collect "What went well"
 2. Collect "What could be improved"
 3. Collect "Action items for next sprint"
@@ -139,14 +148,14 @@
 
 ### Issue Assignment Rules
 
-| Issue Type | Primary Agent | Backup Agent |
-|------------|--------------|--------------|
-| Research | pm-architect | tech-lead |
-| Frontend | frontend-dev | tech-lead |
-| Backend | backend-dev | tech-lead |
-| Fullstack | backend-dev + frontend-dev | tech-lead |
-| DevOps | devops | tech-lead |
-| QA/Test | qa | tech-lead |
+| Issue Type | Primary Agent              | Backup Agent |
+| ---------- | -------------------------- | ------------ |
+| Research   | pm-architect               | tech-lead    |
+| Frontend   | frontend-dev               | tech-lead    |
+| Backend    | backend-dev                | tech-lead    |
+| Fullstack  | backend-dev + frontend-dev | tech-lead    |
+| DevOps     | devops                     | tech-lead    |
+| QA/Test    | qa                         | tech-lead    |
 
 ### Handoff Protocol
 
@@ -175,6 +184,7 @@ Backlog → Ready → In Progress → In Review → Done
 ```
 
 Column-to-label mapping:
+
 - Backlog: no label
 - Ready: `ready-for-dev`
 - In Progress: `in-progress`
@@ -184,17 +194,20 @@ Column-to-label mapping:
 ## Automation Hooks
 
 ### On Issue Created
+
 - PM/Architect reviews within 1 hour
 - Adds priority label (P0-P3)
 - Adds type label (frontend/backend/devops/etc)
 - Estimates size
 
 ### On PR Created
+
 - Tech Lead auto-assigned for review
 - CI must pass before review
 - Review within 4 hours
 
 ### On PR Merged
+
 - Issue auto-closed
 - `done` label added
 - State.json updated

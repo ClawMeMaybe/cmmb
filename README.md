@@ -7,9 +7,11 @@
 ClawMeMaybe is an AI-native enterprise OpenClaw management platform with AI-driven development workflow.
 
 ### Phase 1: Admin Portal
+
 For infrastructure operations and procurement staff, providing OpenClaw instance monitoring, management, and lifecycle management.
 
 ### Phase 2: User Portal
+
 For business teams and product/engineering teams, providing resource requests, task allocation, and efficient project advancement.
 
 ## Tech Stack
