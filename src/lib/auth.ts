@@ -34,9 +34,12 @@ export async function createSession(userId: string): Promise<string> {
   const cookieStore = await cookies();
   cookieStore.set("session_user_id", userId, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    // Don't require HTTPS for localhost development
+    secure:
+      process.env.NODE_ENV === "production" && process.env.HTTPS === "true",
     sameSite: "lax",
     expires: expiresAt,
+    path: "/",
   });
 
   return sessionId;
