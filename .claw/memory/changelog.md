@@ -1,5 +1,26 @@
 # Changelog
 
+## v1.0.1 (2026-03-31) - Login Flow Fix
+
+### Bug Fixes
+- **Login redirect issue**: Root page was statically rendered with redirect baked in
+  - Fix: Added `export const dynamic = "force-dynamic"` to force server-side rendering
+- **Cookie not working over HTTP**: Cookie had `Secure` flag which requires HTTPS
+  - Fix: Only set `Secure` flag when both production AND HTTPS are enabled
+- **E2E test strict mode violation**: Selector matched multiple elements
+  - Fix: Use more specific selector (`h1` with containsText)
+
+### PR Merged
+- #31: fix/login-redirect
+
+### Test Results
+- Login → Instances redirect works ✅
+- All 16 E2E tests pass ✅
+
+<!-- source: login-fix -->
+
+---
+
 ## v1.4 (2026-03-31) - Sprint 2 Start
 
 ### Sprint 1 Complete ✅
