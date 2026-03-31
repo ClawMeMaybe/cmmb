@@ -1,0 +1,20 @@
+{
+  "project": "ClawMeMaybe",
+  "phase": "Phase 0 - Infrastructure Setup",
+  "currentSprint": null,
+  "lastUpdated": "2026-03-31",
+  "status": "initializing",
+  "pendingTasks": [
+    "确认 RDS Claw 机器 SSH 访问",
+    "配置 GitHub 仓库 + SSH Key",
+    "创建 GitHub Project Board (Kanban)",
+    "验证 Claude Code 开发环境"
+  ],
+  "completedTasks": [
+    "项目文档创建",
+    ".claw/ 目录结构创建",
+    "Agent 角色定义创建",
+    "初始记忆文件创建",
+    "工作流定义创建"
+  ]
+}
