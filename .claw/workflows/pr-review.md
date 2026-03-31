@@ -1,49 +1,49 @@
-# PR Review 流程
+# PR Review Workflow
 
-## 流程
+## Flow
 
 ```
-开发完成 -> 提交 PR -> CI 自动检查 -> Tech Lead Review -> 通过 -> 合并 -> 部署
-                                          |
-                                      不通过 -> 修改 -> 重新提交
+Development complete -> Create PR -> CI auto-check -> Human Review -> Approve -> Merge -> Deploy
+                                                    |
+                                                Request changes -> Fix -> Re-submit
 ```
 
-## CI 自动检查（必须全部通过）
+## CI Auto-Checks (Must All Pass)
 
-- [ ] ESLint 无错误
-- [ ] Prettier 格式正确
-- [ ] TypeScript 类型检查通过
-- [ ] 单元测试通过
-- [ ] E2E 测试通过
-- [ ] 测试覆盖率达标（> 80%）
+- [ ] ESLint no errors
+- [ ] Prettier formatting correct
+- [ ] TypeScript type check passes
+- [ ] Unit tests pass
+- [ ] E2E tests pass
+- [ ] Test coverage meets threshold (> 80%)
 
-## Tech Lead Review 检查项
+## Human Review Checklist
 
-- [ ] 代码逻辑正确
-- [ ] 遵循项目代码规范
-- [ ] 无安全隐患
-- [ ] 无性能问题
-- [ ] 有适当的测试覆盖
-- [ ] 错误处理完善
-- [ ] 代码可读性好
+- [ ] Code logic is correct
+- [ ] Follows project coding conventions
+- [ ] No security issues
+- [ ] No performance problems
+- [ ] Adequate test coverage
+- [ ] Error handling is complete
+- [ ] Code is readable and maintainable
 
-## PR 描述要求
+## PR Description Requirements
 
 ```markdown
-## 变更内容
-- 简要描述本次变更做了什么
+## Summary
+- Brief description of what this PR does
 
-## 相关 Issue
+## Related Issue
 - Closes #123
 
-## 测试方法
-- 如何验证本次变更
+## How to Test
+- Steps to verify this change
 
-## 截图（如适用）
-- UI 变更需要提供截图
+## Screenshots (if applicable)
+- UI changes should include screenshots
 ```
 
-## 合并策略
+## Merge Strategy
 
-- 使用 Squash and Merge
-- Commit message 遵循 Conventional Commits
+- Use Squash and Merge
+- Commit message follows Conventional Commits

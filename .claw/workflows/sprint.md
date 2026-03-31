@@ -1,29 +1,59 @@
-# Sprint 管理流程
+# Async Development Workflow
 
-## Sprint 周期
+## Overview
 
-- 建议周期: 1 周
-- 每个 Sprint 开始时 PM Agent 从 Kanban 的 Todo 列选取任务
+This project uses a fully async, GitHub-driven development model. GitHub Issues are the task queue. OpenClaw picks up tasks via cron, implements them through Claude Code, and creates PRs for human review.
 
-## Kanban 列定义
+## Issue Label Pipeline
 
-| 列 | 含义 | 进入条件 | 退出条件 |
-|----|------|----------|----------|
-| Backlog | 待排期需求 | PM 创建 Issue | 排入 Sprint |
-| Todo | 本 Sprint 待开发 | 排入 Sprint | 开始开发 |
-| In Progress | 开发中 | Claude Code 开始编码 | 提交 PR |
-| Review | 待 Review | PR 已提交 | Tech Lead 审核通过 |
-| Done | 已完成 | 合并到 main | - |
+```
+(no label) --human creates--> ready-for-dev --cron picks--> in-progress --PR created--> needs-review --human merges--> done
+                                                          |
+                                                      blocked (with comment)
+```
 
-## PM Agent 职责
+| Label | Meaning | Who Sets | Who Clears |
+|-------|---------|----------|------------|
+| `ready-for-dev` | Ready to be picked up by OpenClaw | Human PM | Cron script |
+| `in-progress` | OpenClaw is working on it | Cron script | Claude Code (after PR) |
+| `needs-review` | PR created, waiting for human | Claude Code | Human (after merge) |
+| `blocked` | OpenClaw hit a blocker | Claude Code | Human (after resolving) |
+| `needs-clarification` | Requirements unclear | Claude Code | Human (after answering) |
 
-1. 从 Backlog 选取高优先级任务移入 Todo
-2. 监控 In Progress 任务，识别阻塞项
-3. Review 列的任务等待 Tech Lead 审核
-4. 已合并的 PR 自动移入 Done
+## Cron Schedule
 
-## 任务粒度
+```
+*/15 * * * *  bash /root/.openclaw/cron/pick-issues.sh
+```
 
-- 每个 Task 应在 1-2 个开发日内完成
-- 超过 2 天的 Task 需要拆分为更小的子任务
-- 每个 Task 必须有明确的 Acceptance Criteria
+Runs every 15 minutes. Each run:
+1. Pulls latest code from GitHub
+2. Checks for open issues labeled `ready-for-dev`
+3. Picks the highest priority one (first by GitHub ordering)
+4. Marks it `in-progress` and comments on the issue
+5. Invokes Claude Code to implement it
+6. Claude Code creates a PR and updates labels
+7. Moves to the next issue if time permits
+
+## Human Workflow
+
+1. **Create an Issue** with clear description and acceptance criteria
+2. **Label it** `ready-for-dev` when ready
+3. **Review PRs** when they appear (OpenClaw comments on the issue with the PR link)
+4. **Merge** when satisfied, or request changes via PR review
+
+## Claude Code Pre-Commit Routine
+
+Before EVERY commit:
+1. `npm run lint` — fix all issues
+2. `npm run type-check` — fix all errors
+3. `npm test` — ensure tests pass
+4. Run `/simplify` (Claude Code code review)
+5. Update unit tests to maintain coverage
+6. Update docs in `.claw/memory/` if anything changed
+
+## Task Granularity
+
+- Each issue should be completable in a single Claude Code session
+- If an issue is too large, OpenClaw will create sub-issues
+- Every issue must have clear acceptance criteria

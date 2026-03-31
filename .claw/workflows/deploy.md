@@ -1,26 +1,27 @@
-# 部署流程
+# Deployment Workflow
 
-## 环境
+## Environments
 
-| 环境 | 用途 | 部署方式 |
-|------|------|----------|
-| Preview | PR 预览验证 | GitHub Actions 自动部署 |
-| Dev | 开发环境 | 远程机器 Docker |
-| Prod | 生产环境 | 待定（二期） |
+| Environment | Purpose | Deployment |
+|-------------|---------|------------|
+| Preview | PR validation | GitHub Actions auto-deploy |
+| Dev | Development | Remote machine Docker |
+| Prod | Production | TBD (Phase 2) |
 
-## Preview 部署
+## Preview Deployment
 
-- 触发条件: PR 提交或更新
-- 部署方式: GitHub Pages 或 Vercel Preview
-- 用途: UI 和页面流程验证
+- Trigger: PR opened or updated
+- Method: GitHub Pages or Vercel Preview
+- Purpose: UI and page flow validation
+- Limitation: No backend, UI only
 
-## Dev 部署（远程机器）
+## Dev Deployment (Remote Machine)
 
-- 触发条件: PR 合并到 main
-- 部署方式: Docker Compose
-- 访问方式: IP:端口 或域名
+- Trigger: PR merged to main
+- Method: Docker Compose
+- Access: IP:port or domain
 
-### 部署步骤
+### Deployment Steps
 
 ```bash
 git pull origin main
@@ -29,9 +30,32 @@ docker compose up -d
 curl http://localhost:3000/api/health
 ```
 
-## 健康检查
+### Docker Compose Services
 
-- 端点: `GET /api/health`
-- 返回: `{ status: "ok", timestamp: "..." }`
-- 检查频率: 每 30 秒
-- 失败阈值: 连续 3 次失败标记为 unhealthy
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL
+      - OPENCLAW_GATEWAY_URL
+      - OPENCLAW_GATEWAY_TOKEN
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf
+```
+
+## Health Check
+
+- Endpoint: `GET /api/health`
+- Response: `{ status: "ok", timestamp: "..." }`
+- Frequency: Every 30 seconds
+- Failure threshold: 3 consecutive failures = unhealthy
