@@ -29,3 +29,25 @@ export interface HealthCheckDetail {
 }
 
 export type HealthCheckResponse = HealthCheckDetail;
+
+// Gateway types
+export interface GatewayStatus {
+  status: "ok" | "error" | "offline";
+  version?: string;
+  uptime?: number;
+  gatewayUrl?: string;
+}
+
+export interface GatewayConfig {
+  gatewayUrl: string;
+  hasToken: boolean;
+}
+
+export interface GatewayTestResult {
+  success: boolean;
+  message: string;
+  details?: {
+    version?: string;
+    uptime?: number;
+  };
+}
