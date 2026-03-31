@@ -27,16 +27,19 @@ ClawMeMaybe 是一个 AI-native 的企业级 OpenClaw 管理平台。
 ## CI/CD 流程
 
 ### PR 检查
+
 - ESLint + Prettier 检查
 - TypeScript 类型检查
 - 单元测试（Vitest）
 - E2E 测试（Playwright）
 
 ### 合并到 main
+
 - 自动构建
 - 部署到 Preview 环境
 
 ### Tag 发布
+
 - 构建 Docker 镜像
 - 推送到 Registry
 

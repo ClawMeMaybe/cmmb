@@ -28,10 +28,12 @@
 ## 记忆更新规则
 
 ✅ **可追加**:
+
 - `.claw/memory/domain-knowledge.md`（部署相关知识）
 - `.claw/workflows/deploy.md`（流程优化）
 
 ❌ **禁止修改**:
+
 - `architecture.md`
 - `changelog.md`
 - `state.json`
@@ -39,6 +41,7 @@
 ## 完成汇报
 
 向主 Agent 汇报：
+
 - 任务完成状态
 - 创建的 PR 编号
 - 部署测试结果

@@ -12,13 +12,13 @@ This project uses a fully async, GitHub-driven development model. GitHub Issues 
                                                       blocked (with comment)
 ```
 
-| Label | Meaning | Who Sets | Who Clears |
-|-------|---------|----------|------------|
-| `ready-for-dev` | Ready to be picked up by OpenClaw | Human PM | Cron script |
-| `in-progress` | OpenClaw is working on it | Cron script | Claude Code (after PR) |
-| `needs-review` | PR created, waiting for human | Claude Code | Human (after merge) |
-| `blocked` | OpenClaw hit a blocker | Claude Code | Human (after resolving) |
-| `needs-clarification` | Requirements unclear | Claude Code | Human (after answering) |
+| Label                 | Meaning                           | Who Sets    | Who Clears              |
+| --------------------- | --------------------------------- | ----------- | ----------------------- |
+| `ready-for-dev`       | Ready to be picked up by OpenClaw | Human PM    | Cron script             |
+| `in-progress`         | OpenClaw is working on it         | Cron script | Claude Code (after PR)  |
+| `needs-review`        | PR created, waiting for human     | Claude Code | Human (after merge)     |
+| `blocked`             | OpenClaw hit a blocker            | Claude Code | Human (after resolving) |
+| `needs-clarification` | Requirements unclear              | Claude Code | Human (after answering) |
 
 ## Cron Schedule
 
@@ -27,13 +27,15 @@ This project uses a fully async, GitHub-driven development model. GitHub Issues 
 ```
 
 Runs every 15 minutes. Each run:
+
 1. Pulls latest code from GitHub
 2. Checks for open issues labeled `ready-for-dev`
 3. Picks the highest priority one (first by GitHub ordering)
-4. Marks it `in-progress` and comments on the issue
-5. Invokes Claude Code to implement it
-6. Claude Code creates a PR and updates labels
-7. Moves to the next issue if time permits
+4. **Assigns the issue**: `gh issue edit <number> --add-assignee "@me"`
+5. Marks it `in-progress` and comments on the issue
+6. Invokes Claude Code to implement it
+7. Claude Code creates a PR and updates labels
+8. Moves to the next issue if time permits
 
 ## Human Workflow
 
@@ -45,6 +47,7 @@ Runs every 15 minutes. Each run:
 ## Claude Code Pre-Commit Routine
 
 Before EVERY commit:
+
 1. `npm run lint` — fix all issues
 2. `npm run type-check` — fix all errors
 3. `npm test` — ensure tests pass
