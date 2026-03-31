@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import type { Instance, AuditLog } from "@prisma/client";
+import type { Instance } from "@prisma/client";
 import { InstanceStatus } from "@prisma/client";
+import { createAuditLog, AuditActions, EntityTypes } from "@/lib/audit";
 
 export async function getInstances(): Promise<Instance[]> {
   const instances = await prisma.instance.findMany({
@@ -37,10 +38,11 @@ export async function createInstance(data: {
 
   // Create audit log
   await createAuditLog({
-    action: "CREATE_INSTANCE",
-    entityType: "Instance",
+    action: AuditActions.CREATE_INSTANCE,
+    entityType: EntityTypes.INSTANCE,
     entityId: instance.id,
     userId: data.createdById,
+    instanceId: instance.id,
     details: { name: instance.name, gatewayUrl: instance.gatewayUrl },
   });
 
@@ -65,10 +67,11 @@ export async function updateInstance(
 
   // Create audit log
   await createAuditLog({
-    action: "UPDATE_INSTANCE",
-    entityType: "Instance",
+    action: AuditActions.UPDATE_INSTANCE,
+    entityType: EntityTypes.INSTANCE,
     entityId: id,
     userId,
+    instanceId: id,
     details: data as Record<string, unknown>,
   });
 
@@ -85,46 +88,12 @@ export async function deleteInstance(
 
   // Create audit log
   await createAuditLog({
-    action: "DELETE_INSTANCE",
-    entityType: "Instance",
+    action: AuditActions.DELETE_INSTANCE,
+    entityType: EntityTypes.INSTANCE,
     entityId: id,
     userId,
+    instanceId: id,
   });
 
   return true;
-}
-
-export async function createAuditLog(data: {
-  action: string;
-  entityType: string;
-  entityId: string;
-  userId: string;
-  instanceId?: string;
-  details?: Record<string, unknown>;
-}): Promise<AuditLog> {
-  return prisma.auditLog.create({
-    data: {
-      action: data.action,
-      entityType: data.entityType,
-      entityId: data.entityId,
-      userId: data.userId,
-      instanceId: data.instanceId ?? null,
-      details: data.details ? JSON.parse(JSON.stringify(data.details)) : null,
-    },
-  });
-}
-
-export async function getAuditLogs(options?: {
-  instanceId?: string;
-  userId?: string;
-  limit?: number;
-}): Promise<AuditLog[]> {
-  return prisma.auditLog.findMany({
-    where: {
-      instanceId: options?.instanceId,
-      userId: options?.userId,
-    },
-    orderBy: { createdAt: "desc" },
-    take: options?.limit ?? 100,
-  });
 }

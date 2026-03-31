@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import {
-  getInstanceById,
-  updateInstance,
-  createAuditLog,
-} from "@/server/instances";
+import { getInstanceById, updateInstance } from "@/server/instances";
 import { createGatewayClient, type InstanceAction } from "@/lib/gateway";
+import { createAuditLog, AuditActions, EntityTypes } from "@/lib/audit";
 import { InstanceStatus } from "@prisma/client";
 import type { ApiResponse, Instance } from "@/types";
 import { z } from "zod";
@@ -20,8 +17,13 @@ interface RouteParams {
 }
 
 /**
- * Status transitions based on action
+ * Map action string to AuditAction
  */
+const actionToAuditAction: Record<InstanceAction, string> = {
+  start: AuditActions.START_INSTANCE,
+  stop: AuditActions.STOP_INSTANCE,
+  restart: AuditActions.RESTART_INSTANCE,
+};
 const actionStatusMap: Record<
   InstanceAction,
   { pending: InstanceStatus; success: InstanceStatus }
@@ -112,8 +114,8 @@ export async function PATCH(
 
       // Log failed action
       await createAuditLog({
-        action: `${action.toUpperCase()}_INSTANCE`,
-        entityType: "Instance",
+        action: actionToAuditAction[action],
+        entityType: EntityTypes.INSTANCE,
         entityId: id,
         userId: session.id,
         instanceId: id,
@@ -141,8 +143,8 @@ export async function PATCH(
 
     // Log successful action
     await createAuditLog({
-      action: `${action.toUpperCase()}_INSTANCE`,
-      entityType: "Instance",
+      action: actionToAuditAction[action],
+      entityType: EntityTypes.INSTANCE,
       entityId: id,
       userId: session.id,
       instanceId: id,
