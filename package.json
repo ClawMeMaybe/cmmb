@@ -16,6 +16,7 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
+    "db:seed": "tsx prisma/seed.ts",
     "test": "vitest",
     "test:run": "vitest run"
   },
@@ -40,23 +41,18 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "prettier": "^3.8.1",
+    "lint-staged": "^15.5.0",
+    "prettier": "^3.5.3",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.0",
     "typescript": "^5",
     "vitest": "^2.1.9"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md}": [
       "prettier --write"
     ]
   }

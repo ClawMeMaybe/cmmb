@@ -71,3 +71,20 @@ export async function clearSession(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete("session_user_id");
 }
+
+/**
+ * Require authentication for server components.
+ * Returns the user if authenticated, redirects to login if not.
+ * Use this in server components that require authentication.
+ */
+export async function requireAuth(): Promise<SessionUser> {
+  const user = await getSession();
+
+  if (!user) {
+    // In a server component, we throw a redirect
+    // This is handled by Next.js
+    throw new Error("UNAUTHORIZED");
+  }
+
+  return user;
+}
