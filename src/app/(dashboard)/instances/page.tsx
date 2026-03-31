@@ -79,7 +79,9 @@ export default function InstancesPage() {
             Manage your OpenClaw instances
           </p>
         </div>
-        <Button>Add Instance</Button>
+        <Link href="/instances/new">
+          <Button>Add Instance</Button>
+        </Link>
       </div>
 
       <Card>

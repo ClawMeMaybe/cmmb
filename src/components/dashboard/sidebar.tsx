@@ -6,12 +6,16 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { LogOut } from "lucide-react";
+import { LogOut, Plus } from "lucide-react";
 
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
+  { href: "/instances/new", label: "Add Instance" },
   { href: "/devices", label: "Devices" },
+  { href: "/users", label: "Users" },
+  { href: "/skills", label: "Skills" },
+  { href: "/channels", label: "Channels" },
   { href: "/settings/gateway", label: "Settings" },
 ];
 
@@ -55,6 +59,13 @@ export function Sidebar() {
             </li>
           ))}
         </ul>
+        <Separator className="my-4" />
+        <Link href="/instances/new">
+          <Button variant="outline" className="w-full justify-start">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Instance
+          </Button>
+        </Link>
       </nav>
       <Separator />
       <div className="p-4">
