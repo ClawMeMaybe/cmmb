@@ -11,21 +11,23 @@
 
 ### Branch Naming Pattern
 
-| Type | Pattern | Example |
-|------|---------|---------|
-| Feature | `feature/<name>` | `feature/auth-system` |
-| Fix | `fix/<name>` | `fix/login-validation` |
-| Chore | `chore/<name>` | `chore/i18n-cn-to-en` |
-| Docs | `docs/<name>` | `docs/api-reference` |
+| Type     | Pattern           | Example                |
+| -------- | ----------------- | ---------------------- |
+| Feature  | `feature/<name>`  | `feature/auth-system`  |
+| Fix      | `fix/<name>`      | `fix/login-validation` |
+| Chore    | `chore/<name>`    | `chore/i18n-cn-to-en`  |
+| Docs     | `docs/<name>`     | `docs/api-reference`   |
 | Refactor | `refactor/<name>` | `refactor/auth-module` |
 
 ### Rules
+
 - **Never use:** `issue-<number>-<name>` pattern
 - Use kebab-case for `<name>` part
 - Branch name should describe what the branch does
 - One branch per PR, one PR per Issue
 
 ### PR Workflow
+
 1. Create branch: `git checkout -b <type>/<name>`
 2. Commit with conventional message: `git commit -m "type: description"`
 3. Push branch: `git push -u origin <type>/<name>`

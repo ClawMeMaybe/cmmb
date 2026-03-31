@@ -48,6 +48,7 @@ what needs to be done next.
 ### 4. Verify Clone Status
 
 After the clone starts, it should be able to:
+
 - Describe current project progress
 - List pending GitHub Issues
 - Identify what should be done in the next Sprint
@@ -55,24 +56,24 @@ After the clone starts, it should be able to:
 
 ## `.claw/` Directory Description
 
-| Directory/File | Purpose |
-|----------------|---------|
-| `agents/` | Prompt definitions for each role Agent |
-| `workspace/CLAUDE.md` | Project context (auto-updated) |
-| `workspace/state.json` | Current task state |
-| `memory/` | Project memory (architecture decisions, standards, domain knowledge) |
-| `workflows/` | Development workflow definitions |
+| Directory/File         | Purpose                                                              |
+| ---------------------- | -------------------------------------------------------------------- |
+| `agents/`              | Prompt definitions for each role Agent                               |
+| `workspace/CLAUDE.md`  | Project context (auto-updated)                                       |
+| `workspace/state.json` | Current task state                                                   |
+| `memory/`              | Project memory (architecture decisions, standards, domain knowledge) |
+| `workflows/`           | Development workflow definitions                                     |
 
 ## Agent Roles
 
-| Role | File | Responsibilities |
-|------|------|------------------|
+| Role         | File                     | Responsibilities                                            |
+| ------------ | ------------------------ | ----------------------------------------------------------- |
 | PM/Architect | `agents/pm-architect.md` | Requirement breakdown, architecture design, task assignment |
-| Tech Lead | `agents/tech-lead.md` | PR Review, code quality assurance |
-| Frontend Dev | `agents/frontend-dev.md` | UI/Component development |
-| Backend Dev | `agents/backend-dev.md` | API/Database development |
-| DevOps | `agents/devops.md` | CI/CD, deployment, environment management |
-| QA | `agents/qa.md` | Test writing, quality assurance |
+| Tech Lead    | `agents/tech-lead.md`    | PR Review, code quality assurance                           |
+| Frontend Dev | `agents/frontend-dev.md` | UI/Component development                                    |
+| Backend Dev  | `agents/backend-dev.md`  | API/Database development                                    |
+| DevOps       | `agents/devops.md`       | CI/CD, deployment, environment management                   |
+| QA           | `agents/qa.md`           | Test writing, quality assurance                             |
 
 ## Memory Evolution
 

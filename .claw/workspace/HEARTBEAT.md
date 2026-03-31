@@ -5,27 +5,34 @@ This file is read on every heartbeat. Execute tasks in order.
 ## Immediate Actions (Every Heartbeat)
 
 ### 1. Check Active Subagents
+
 ```bash
 subagents action=list
 ```
+
 - If any agent running > 30min without progress → check status or restart
 - If agent failed → spawn replacement
 
 ### 2. Check CI Status
+
 ```bash
 gh pr checks <number> --repo ClawMeMaybe/cmmb
 ```
+
 - Flag failing CI on open PRs
 - Alert on PRs waiting > 24h for review
 
 ### 3. Capacity Check
+
 - If active issues < 3 AND ready issues exist → assign next
 
 ## Scheduled Ceremonies
 
 ### Daily Standup (09:00 or on session start)
+
 **Agent:** `tech-lead`
 **Spawn command:**
+
 ```
 sessions_spawn with:
   runtime: subagent
@@ -42,8 +49,10 @@ sessions_spawn with:
 ```
 
 ### Sprint Planning (Monday 09:00 or sprint start)
+
 **Agent:** `pm-architect`
 **Spawn command:**
+
 ```
 sessions_spawn with:
   runtime: subagent
@@ -61,8 +70,10 @@ sessions_spawn with:
 ```
 
 ### Backlog Grooming (Wednesday 14:00)
+
 **Agent:** `pm-architect`
 **Spawn command:**
+
 ```
 sessions_spawn with:
   runtime: subagent
@@ -78,8 +89,10 @@ sessions_spawn with:
 ```
 
 ### Sprint Review (Friday 17:00)
+
 **Agent:** `tech-lead`
 **Spawn command:**
+
 ```
 sessions_spawn with:
   runtime: subagent
@@ -99,8 +112,10 @@ sessions_spawn with:
 ```
 
 ### Retrospective (Friday 17:30)
+
 **Agent:** `pm-architect`
 **Spawn command:**
+
 ```
 sessions_spawn with:
   runtime: subagent
@@ -120,20 +135,22 @@ sessions_spawn with:
 ## Issue Assignment Logic
 
 ### Priority Queue
+
 1. P0 (Critical) → Immediate assignment
 2. P1 (High) → Assign when capacity
 3. P2 (Medium) → Fill remaining capacity
 4. P3 (Low) → Backlog
 
 ### Type-to-Agent Mapping
-| Type | Spawn Agent |
-|------|-------------|
-| research | pm-architect |
-| frontend | frontend-dev |
-| backend | backend-dev |
+
+| Type      | Spawn Agent                            |
+| --------- | -------------------------------------- |
+| research  | pm-architect                           |
+| frontend  | frontend-dev                           |
+| backend   | backend-dev                            |
 | fullstack | backend-dev (first), then frontend-dev |
-| devops | devops |
-| test/qa | qa |
+| devops    | devops                                 |
+| test/qa   | qa                                     |
 
 ### Max Concurrent Issues: 3
 
@@ -141,21 +158,22 @@ sessions_spawn with:
 
 **Sprint 1** (2026-03-31 - 2026-04-06)
 
-| Issue | Title | Priority | Type | Status | Agent |
-|-------|-------|----------|------|--------|-------|
-| #9 | Initialize Boilerplate | P0 | devops | ✅ Done | — |
-| #10 | Research Gateway + Token | P1 | research | 🏃 In Progress | subagent |
-| #12 | Instance CRUD | P1 | fullstack | 📋 Ready | — |
-| #13 | Admin Login + Auth | P1 | fullstack | 🏃 In Progress | subagent |
-| #14 | Audit Log | P3 | backend | 📋 Backlog | — |
-| #16 | Chinese → English | P2 | chore | ✅ Done | — |
-| #11 | Monitoring Dashboard | P2 | frontend | 📋 Ready | — |
+| Issue | Title                    | Priority | Type      | Status         | Agent    |
+| ----- | ------------------------ | -------- | --------- | -------------- | -------- |
+| #9    | Initialize Boilerplate   | P0       | devops    | ✅ Done        | —        |
+| #10   | Research Gateway + Token | P1       | research  | 🏃 In Progress | subagent |
+| #12   | Instance CRUD            | P1       | fullstack | 📋 Ready       | —        |
+| #13   | Admin Login + Auth       | P1       | fullstack | 🏃 In Progress | subagent |
+| #14   | Audit Log                | P3       | backend   | 📋 Backlog     | —        |
+| #16   | Chinese → English        | P2       | chore     | ✅ Done        | —        |
+| #11   | Monitoring Dashboard     | P2       | frontend  | 📋 Ready       | —        |
 
 **Capacity:** 2/3 used
 
 ## Signals File
 
 Check `/tmp/openclaw-signals` for ceremony triggers:
+
 - `STANDUP_NEEDED=true`
 - `PLANNING_NEEDED=true`
 - `GROOMING_NEEDED=true`
