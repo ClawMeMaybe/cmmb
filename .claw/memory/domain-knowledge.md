@@ -1,62 +1,62 @@
-# 领域知识
+# Domain Knowledge
 
-## v1.0 (2026-03-31) - 初始知识
+## v1.0 (2026-03-31) - Initial Knowledge
 
 <!-- source: initial -->
 
-## OpenClaw 纳管
+## OpenClaw Management
 
-### 待调研内容
+### Topics to Research
 
-1. **OpenClaw Gateway 方案**
+1. **OpenClaw Gateway Solution**
    - LiteLLM Gateway
    - OpenWebUI
-   - 其他成熟开源方案
-   - 对比维度: 功能完整性、社区活跃度、部署复杂度、与阿里云兼容性
+   - Other mature open-source solutions
+   - Comparison dimensions: feature completeness, community activity, deployment complexity, Alibaba Cloud compatibility
 
-2. **Token 管理**
-   - Token 生成与分发机制
-   - Token 轮换策略
-   - Token 权限粒度
+2. **Token Management**
+   - Token generation and distribution mechanism
+   - Token rotation strategy
+   - Token permission granularity
 
-3. **实例通信**
-   - OpenClaw 实例的 API 接口
-   - 健康检查方式
-   - 日志采集方式
+3. **Instance Communication**
+   - OpenClaw instance API interfaces
+   - Health check methods
+   - Log collection methods
 
-### 阿里云 RDS Claw
+### Alibaba Cloud RDS Claw
 
-- RDS Claw 是阿里云推出的基于镜像快速创建 OpenClaw VM 的产品
-- 当前开发环境: 一台 RDS Claw 机器，已安装 Claude Code
-- Claude 用户: `su - claude` 切换，无密码，有除 root 外所有权限
-- 执行命令: `claude --dangerously-skip-permissions`
+- RDS Claw is Alibaba Cloud's product for quickly creating OpenClaw VMs from images
+- Current development environment: One RDS Claw machine, Claude Code installed
+- Claude user: Switch via `su - claude`, no password, all permissions except root
+- Execution command: `claude --dangerously-skip-permissions`
 
-## 一期功能域
+## Phase 1 Functional Domains
 
-### 实例管理
+### Instance Management
 
-- 实例生命周期: 创建 -> 启动 -> 运行 -> 停止 -> 删除
-- 实例状态: running, stopped, error, creating, deleting
+- Instance lifecycle: Create -> Start -> Run -> Stop -> Delete
+- Instance states: running, stopped, error, creating, deleting
 
-### 监控
+### Monitoring
 
-- 资源指标: CPU、内存、磁盘、网络
-- 健康状态: healthy, degraded, unhealthy
+- Resource metrics: CPU, memory, disk, network
+- Health status: healthy, degraded, unhealthy
 
-### 审计
+### Auditing
 
-- 操作日志: 谁、什么时间、做了什么、结果如何
+- Operation logs: Who, when, what action, result
 
-## 二期功能域（预留）
+## Phase 2 Functional Domains (Reserved)
 
-### 资源申请
+### Resource Application
 
-- 用户提交资源申请
-- 审批流程
-- 资源分配
+- User submits resource application
+- Approval process
+- Resource allocation
 
-### 任务分配
+### Task Assignment
 
-- 任务创建与分配
-- 进度跟踪
-- 结果收集
+- Task creation and assignment
+- Progress tracking
+- Result collection
