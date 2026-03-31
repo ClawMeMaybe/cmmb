@@ -2,6 +2,9 @@
 export { Role, InstanceStatus } from "@prisma/client";
 export type { User, Instance, AuditLog } from "@prisma/client";
 
+// Device types
+export type { PairedDevice, PairedDevices } from "./device";
+
 // API Response types
 export interface ApiResponse<T> {
   data?: T;
