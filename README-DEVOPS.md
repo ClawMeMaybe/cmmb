@@ -1,42 +1,42 @@
-# OpenClaw DevOps 分身快速启动指南
+# OpenClaw DevOps Clone Quick Start Guide
 
-## 概述
+## Overview
 
-本文档指导你如何快速拉起一个 OpenClaw DevOps 分身，接管 ClawMeMaybe 项目的开发和运维工作。
+This document guides you on how to quickly set up an OpenClaw DevOps clone to take over the development and operations of the ClawMeMaybe project.
 
-## 前置条件
+## Prerequisites
 
-- 一台已安装 OpenClaw 的机器（如阿里云 RDS Claw）
-- Claude Code 已安装并可执行 `claude --dangerously-skip-permissions`
-- GitHub 访问权限（SSH Key 已配置）
-- 项目代码已 clone
+- A machine with OpenClaw installed (e.g., Alibaba Cloud RDS Claw)
+- Claude Code installed and can execute `claude --dangerously-skip-permissions`
+- GitHub access (SSH Key configured)
+- Project code cloned
 
-## 快速启动
+## Quick Start
 
-### 1. Clone 项目
+### 1. Clone the Project
 
 ```bash
 git clone git@github.com:ClawMeMaybe/cmmb.git
 cd cmmb
 ```
 
-### 2. 初始化 OpenClaw 环境
+### 2. Initialize OpenClaw Environment
 
 ```bash
-# 切换到 claude 用户
+# Switch to claude user
 su - claude
 
-# 进入项目目录
+# Enter project directory
 cd /path/to/cmmb
 
-# 加载项目上下文
-# OpenClaw 会读取 .claw/ 目录下的所有配置
+# Load project context
+# OpenClaw will read all configurations in the .claw/ directory
 ```
 
-### 3. 启动 DevOps Agent
+### 3. Start DevOps Agent
 
 ```bash
-# 启动 PM Agent，让它读取当前项目状态并开始工作
+# Start PM Agent, let it read current project state and start working
 claude --dangerously-skip-permissions -p "
 You are the PM/Architect Agent for the ClawMeMaybe project.
 Read the .claw/ directory to understand your role, the project context,
@@ -45,42 +45,42 @@ what needs to be done next.
 "
 ```
 
-### 4. 验证分身状态
+### 4. Verify Clone Status
 
-分身启动后应该能够：
-- 描述项目当前进展
-- 列出待完成的 GitHub Issues
-- 识别下一个 Sprint 应该做什么
-- 指挥 Claude Code 开始开发
+After the clone starts, it should be able to:
+- Describe current project progress
+- List pending GitHub Issues
+- Identify what should be done in the next Sprint
+- Direct Claude Code to start development
 
-## `.claw/` 目录说明
+## `.claw/` Directory Description
 
-| 目录/文件 | 用途 |
-|-----------|------|
-| `agents/` | 各角色 Agent 的 prompt 定义 |
-| `workspace/CLAUDE.md` | 项目上下文（自动更新） |
-| `workspace/state.json` | 当前任务状态 |
-| `memory/` | 项目记忆（架构决策、规范、领域知识） |
-| `workflows/` | 开发工作流定义 |
+| Directory/File | Purpose |
+|----------------|---------|
+| `agents/` | Prompt definitions for each role Agent |
+| `workspace/CLAUDE.md` | Project context (auto-updated) |
+| `workspace/state.json` | Current task state |
+| `memory/` | Project memory (architecture decisions, standards, domain knowledge) |
+| `workflows/` | Development workflow definitions |
 
-## Agent 角色
+## Agent Roles
 
-| 角色 | 文件 | 职责 |
-|------|------|------|
-| PM/Architect | `agents/pm-architect.md` | 需求拆解、架构设计、任务分配 |
-| Tech Lead | `agents/tech-lead.md` | PR Review、代码质量把关 |
-| Frontend Dev | `agents/frontend-dev.md` | UI/组件开发 |
-| Backend Dev | `agents/backend-dev.md` | API/数据库开发 |
-| DevOps | `agents/devops.md` | CI/CD、部署、环境管理 |
-| QA | `agents/qa.md` | 测试编写、质量保障 |
+| Role | File | Responsibilities |
+|------|------|------------------|
+| PM/Architect | `agents/pm-architect.md` | Requirement breakdown, architecture design, task assignment |
+| Tech Lead | `agents/tech-lead.md` | PR Review, code quality assurance |
+| Frontend Dev | `agents/frontend-dev.md` | UI/Component development |
+| Backend Dev | `agents/backend-dev.md` | API/Database development |
+| DevOps | `agents/devops.md` | CI/CD, deployment, environment management |
+| QA | `agents/qa.md` | Test writing, quality assurance |
 
-## 记忆进化
+## Memory Evolution
 
-随着项目推进，OpenClaw 会持续更新 `memory/` 目录下的文件：
+As the project progresses, OpenClaw continuously updates files in the `memory/` directory:
 
-- `architecture.md` — 架构决策记录
-- `conventions.md` — 代码规范
-- `domain-knowledge.md` — 领域知识（OpenClaw 纳管等）
-- `changelog.md` — 重要变更日志
+- `architecture.md` — Architecture decision records
+- `conventions.md` — Code standards
+- `domain-knowledge.md` — Domain knowledge (OpenClaw management, etc.)
+- `changelog.md` — Important change log
 
-新的分身启动后读取这些记忆文件，即可无缝接管项目。
+New clones can seamlessly take over the project by reading these memory files after startup.

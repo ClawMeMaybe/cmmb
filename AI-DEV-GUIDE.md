@@ -1,90 +1,90 @@
-# AI-Native 开发指南
+# AI-Native Development Guide
 
-## 开发模式
+## Development Mode
 
-本项目采用 AI-native 开发模式，由 OpenClaw 多 Agent 系统指挥 Claude Code 完成代码编写。
+This project adopts an AI-native development mode, where the OpenClaw multi-Agent system directs Claude Code to write code.
 
-**核心理念**: OpenClaw 本身随项目一起进化，最终成为项目的 DevOps。所有 OpenClaw 的 workspace 配置、agent 定义、记忆状态与代码一起版本管理，实现开箱即用的 DevOps 分身。
+**Core Philosophy**: OpenClaw itself evolves along with the project, eventually becoming the project's DevOps. All OpenClaw workspace configurations, agent definitions, memory states, and code are version-managed together, achieving an out-of-the-box DevOps clone.
 
-## OpenClaw 配置结构
+## OpenClaw Configuration Structure
 
-### `.claw/` 目录（与代码同版本管理）
+### `.claw/` Directory (Version-managed with Code)
 
 ```
 .claw/
-+-- agents/                    # 各角色 agent 定义
-|   +-- pm-architect.md        # PM/架构师 agent prompt
++-- agents/                    # Agent definitions for each role
+|   +-- pm-architect.md        # PM/Architect agent prompt
 |   +-- tech-lead.md           # Tech Lead agent prompt
-|   +-- frontend-dev.md        # 前端开发 agent prompt
-|   +-- backend-dev.md         # 后端开发 agent prompt
+|   +-- frontend-dev.md        # Frontend Dev agent prompt
+|   +-- backend-dev.md         # Backend Dev agent prompt
 |   +-- devops.md              # DevOps agent prompt
 |   +-- qa.md                  # QA agent prompt
-+-- workspace/                 # OpenClaw workspace 状态
-|   +-- CLAUDE.md              # 项目上下文（自动更新）
-|   +-- state.json             # 当前任务状态
-+-- memory/                    # 项目记忆（随开发积累）
-|   +-- architecture.md        # 架构决策记录
-|   +-- conventions.md         # 代码规范
-|   +-- domain-knowledge.md    # 领域知识（OpenClaw 纳管等）
-|   +-- changelog.md           # 重要变更日志
-+-- workflows/                 # 开发工作流定义
-    +-- sprint.md              # Sprint 管理流程
-    +-- pr-review.md           # PR Review 规则
-    +-- deploy.md              # 部署流程
++-- workspace/                 # OpenClaw workspace state
+|   +-- CLAUDE.md              # Project context (auto-updated)
+|   +-- state.json             # Current task state
++-- memory/                    # Project memory (accumulated during development)
+|   +-- architecture.md        # Architecture decision records
+|   +-- conventions.md         # Code standards
+|   +-- domain-knowledge.md    # Domain knowledge (OpenClaw management, etc.)
+|   +-- changelog.md           # Important change log
++-- workflows/                 # Development workflow definitions
+    +-- sprint.md              # Sprint management process
+    +-- pr-review.md           # PR Review rules
+    +-- deploy.md              # Deployment process
 ```
 
-### Agent 记忆进化机制
+### Agent Memory Evolution Mechanism
 
-随着项目推进，OpenClaw 会持续积累项目上下文：
-1. **架构决策** -> 记录到 `memory/architecture.md`
-2. **代码规范** -> 记录到 `memory/conventions.md`
-3. **领域知识** -> 记录到 `memory/domain-knowledge.md`
-4. **变更历史** -> 记录到 `memory/changelog.md`
+As the project progresses, OpenClaw continuously accumulates project context:
+1. **Architecture Decisions** -> Recorded in `memory/architecture.md`
+2. **Code Standards** -> Recorded in `memory/conventions.md`
+3. **Domain Knowledge** -> Recorded in `memory/domain-knowledge.md`
+4. **Change History** -> Recorded in `memory/changelog.md`
 
-这些记忆文件随代码一起提交，新的 OpenClaw 分身启动后读取这些文件即可快速进入状态。
+These memory files are committed along with the code. A new OpenClaw clone can quickly get up to speed by reading these files after startup.
 
-## 角色定义
+## Role Definitions
 
 ### PM / Architect Agent
-- 需求拆解为 Epic -> Story -> Task
-- 架构设计与技术决策
-- 任务分配到 GitHub Kanban
+- Break down requirements into Epic -> Story -> Task
+- Architecture design and technical decisions
+- Task assignment to GitHub Kanban
 
 ### Tech Lead Agent
 - PR Review
-- 代码质量把关
-- 技术方案审核
+- Code quality assurance
+- Technical solution review
 
 ### Frontend Dev Agent
-- UI 组件开发
-- 页面交互实现
-- 样式与响应式
+- UI component development
+- Page interaction implementation
+- Styling and responsiveness
 
 ### Backend Dev Agent
-- API 开发
-- 数据库操作
-- 业务逻辑实现
+- API development
+- Database operations
+- Business logic implementation
 
 ### DevOps Agent
-- CI/CD 配置
-- Docker 部署
-- 环境管理
+- CI/CD configuration
+- Docker deployment
+- Environment management
 
 ### QA Agent
-- 单元测试编写
-- E2E 测试
-- 质量保障
+- Unit test writing
+- E2E testing
+- Quality assurance
 
-## 工作流程
+## Workflow
 
 ```
-需求确认 -> Issue 创建 -> 任务分配 -> 开发 -> PR -> Review -> 验证 -> 合并 -> 部署
+Requirement Confirmation -> Issue Creation -> Task Assignment -> Development -> PR -> Review -> Verification -> Merge -> Deploy
 ```
 
-## 开发规范
+## Development Standards
 
 ### Commit Message
-遵循 Conventional Commits:
+Follow Conventional Commits:
 ```
 <type>(<scope>): <description>
 
@@ -93,33 +93,33 @@ fix(api): resolve token refresh issue
 docs(readme): update setup instructions
 ```
 
-### PR 规范
-- 每个 PR 对应一个 Issue
-- PR 描述包含：变更内容、测试方法、截图（如适用）
-- 必须通过 CI 检查
+### PR Standards
+- Each PR corresponds to one Issue
+- PR description includes: change content, test method, screenshots (if applicable)
+- Must pass CI checks
 
-### 代码风格
-- TypeScript 严格模式
+### Code Style
+- TypeScript strict mode
 - ESLint + Prettier
-- 组件使用函数式 + Hooks
+- Components use functional style + Hooks
 
-## Claude Code 使用指南
+## Claude Code Usage Guide
 
-### 环境
-- 用户: `claude` (通过 `su - claude` 切换)
-- 权限: 除 root 外的所有权限
-- 命令: `claude --dangerously-skip-permissions`
+### Environment
+- User: `claude` (switch via `su - claude`)
+- Permissions: All permissions except root
+- Command: `claude --dangerously-skip-permissions`
 
-### 最佳实践
-1. 先阅读 Issue 描述和验收标准
-2. 理解现有代码结构
-3. 小步提交，频繁 commit
-4. 编写测试覆盖新功能
-5. 更新相关文档
+### Best Practices
+1. Read Issue description and acceptance criteria first
+2. Understand existing code structure
+3. Small commits, frequent commits
+4. Write tests to cover new features
+5. Update related documentation
 
-## 验证流程
+## Verification Process
 
-1. CI 自动检查通过后
-2. 部署到 Preview 环境
-3. PM 通过链接验证功能
-4. 确认后合并 PR
+1. After CI auto-check passes
+2. Deploy to Preview environment
+3. PM verifies functionality via link
+4. Confirm and merge PR

@@ -1,53 +1,53 @@
-# QA 子代理模板
+# QA Sub-agent Template
 
-你是 ClawMeMaybe 项目的 QA Agent。
+You are the QA Agent for the ClawMeMaybe project.
 
-## 当前任务
+## Current Task
 
 **Issue**: #[ISSUE_NUMBER]
-**标题**: [ISSUE_TITLE]
-**验收标准**: [从 Issue 中提取]
+**Title**: [ISSUE_TITLE]
+**Acceptance Criteria**: [Extracted from Issue]
 
-## 工作目录
+## Working Directory
 
-- 项目路径: `/home/claude/projects/cmmb`
-- 分支: `issue-[ISSUE_NUMBER]-qa-[简短描述]`
+- Project path: `/home/claude/projects/cmmb`
+- Branch: `issue-[ISSUE_NUMBER]-qa-[short-description]`
 
-## 执行流程
+## Execution Flow
 
 1. `git checkout -b issue-[N]-qa-...`
-2. 读取 Issue 详情和验收标准
-3. 分析需要测试的功能
-4. 编写单元测试 / E2E 测试
-5. **每次 commit 前使用 `/simplify` 做 code review**
-6. 运行测试验证覆盖率
-7. 更新 memory（如有新发现）
-8. Commit memory 更新
-9. 提交 PR
+2. Read Issue details and acceptance criteria
+3. Analyze functionality needing testing
+4. Write unit tests / E2E tests
+5. **Use `/simplify` for code review before each commit**
+6. Run tests to verify coverage
+7. Update memory (if new findings)
+8. Commit memory updates
+9. Submit PR
 
-## 测试规范
+## Test Standards
 
-- 单元测试文件: `*.test.ts` 或 `*.spec.ts`
-- E2E 测试: Playwright
-- 覆盖率目标: > 80%
+- Unit test files: `*.test.ts` or `*.spec.ts`
+- E2E tests: Playwright
+- Coverage target: > 80%
 
-## 记忆更新规则
+## Memory Update Rules
 
-✅ **可追加**:
+✅ **Can Append**:
 
-- `.claw/memory/domain-knowledge.md`（测试相关知识）
+- `.claw/memory/domain-knowledge.md` (testing related knowledge)
 
-❌ **禁止修改**:
+❌ **Cannot Modify**:
 
 - `architecture.md`
 - `changelog.md`
 - `state.json`
 
-## 完成汇报
+## Completion Report
 
-向主 Agent 汇报：
+Report to main Agent:
 
-- 任务完成状态
-- 创建的 PR 编号
-- 测试覆盖率结果
-- 发现的问题（如有）
+- Task completion status
+- Created PR number
+- Test coverage results
+- Issues found (if any)

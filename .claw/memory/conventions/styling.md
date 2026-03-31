@@ -1,12 +1,12 @@
-# 样式规范
+# Styling Standards
 
-## v1.0 (2026-03-31) - 初始规范
+## v1.0 (2026-03-31) - Initial Standards
 
-- 使用 Tailwind CSS 工具类
-- 避免内联样式
-- 使用 shadcn/ui 组件库
+- Use Tailwind CSS utility classes
+- Avoid inline styles
+- Use shadcn/ui component library
 <!-- source: initial -->
 
 ---
 
-_此文件由子代理追加更新，主 Agent 整合去重。_
+_This file is appended by sub-agents, main Agent consolidates and deduplicates._
