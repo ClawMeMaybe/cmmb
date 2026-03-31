@@ -1,13 +1,13 @@
-# API 规范
+# API Standards
 
-## v1.0 (2026-03-31) - 初始规范
+## v1.0 (2026-03-31) - Initial Standards
 
-- RESTful 风格
-- 使用标准 HTTP 状态码
-- 统一错误响应格式: `{ error: { code: string, message: string } }`
-- 统一成功响应格式: `{ data: T }`
+- RESTful style
+- Use standard HTTP status codes
+- Unified error response format: `{ error: { code: string, message: string } }`
+- Unified success response format: `{ data: T }`
 <!-- source: initial -->
 
 ---
 
-_此文件由子代理追加更新，主 Agent 整合去重。_
+_This file is appended by sub-agents, main Agent consolidates and deduplicates._
