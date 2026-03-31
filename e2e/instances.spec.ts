@@ -18,8 +18,8 @@ test.describe("Instances List", () => {
     // Navigate to instances
     await page.goto("/instances");
 
-    // Check page title
-    await expect(page.locator("text=Instances")).toBeVisible();
+    // Check page title (use more specific selector)
+    await expect(page.locator("h1")).toContainText("Instances");
 
     // Check for the Add Instance button
     await expect(page.locator('button:has-text("Add Instance")')).toBeVisible();
