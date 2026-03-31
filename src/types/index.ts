@@ -1,6 +1,11 @@
 // Re-export Prisma-generated types
-export { Role, InstanceStatus } from "@prisma/client";
-export type { User, Instance, AuditLog } from "@prisma/client";
+export {
+  Role,
+  InstanceStatus,
+  ChannelType,
+  ChannelStatus,
+} from "@prisma/client";
+export type { User, Instance, Channel, AuditLog } from "@prisma/client";
 
 // Device types
 export type { PairedDevice, PairedDevices } from "./device";
