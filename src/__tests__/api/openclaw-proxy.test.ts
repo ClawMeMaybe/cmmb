@@ -299,32 +299,21 @@ describe("OpenClaw Proxy", () => {
     });
 
     it("should return timeout error on abort", async () => {
-      vi.useFakeTimers();
+      // Create an AbortError
+      const abortError = new Error("The operation was aborted");
+      abortError.name = "AbortError";
 
-      // Create a fetch that never resolves
-      global.fetch = vi.fn().mockImplementation(
-        () =>
-          new Promise((_, reject) => {
-            // This will be aborted
-          })
-      );
+      global.fetch = vi.fn().mockRejectedValue(abortError);
 
       const request = new Request("http://localhost:3000/api/openclaw/health", {
         method: "GET",
       });
 
-      const responsePromise = proxyRequest(request, mockConfig);
-
-      // Advance timers to trigger timeout
-      await vi.advanceTimersByTimeAsync(10000);
-
-      const response = await responsePromise;
+      const response = await proxyRequest(request, mockConfig);
 
       expect(response.status).toBe(504);
       const data = await response.json();
       expect(data.code).toBe(PROXY_ERROR_CODES.TIMEOUT);
-
-      vi.useRealTimers();
     });
 
     it("should return connection error on fetch failure", async () => {
