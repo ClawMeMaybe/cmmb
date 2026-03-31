@@ -31,24 +31,6 @@ Expected: `{"loggedIn": true, "authMethod": "api_key"}`
 - **DO** use direct exec with Claude Code for all coding work
 - Claude Code handles file editing, git operations, and code generation better than native subagents
 
-## v1.1 (2026-03-31) - Agent Routing
-
-### Problem
-Main agent was used for cmmb project work → wrote to wrong memory location (global instead of project).
-
-### Solution
-Route project work to project-specific agents:
-
-| Project | Agent | Workspace |
-|---------|-------|-----------|
-| ClawMeMaybe/cmmb | `cmmb` | `/root/.openclaw/workspaces/cmmb/` |
-| General/cross-project | `main` | `/root/.openclaw/workspace/` |
-
-### Rules
-- User says "cmmb", "ClawMeMaybe", or project-specific work → use `cmmb` agent
-- If unclear which agent to use → ASK before proceeding
-- Project memory lives in `repo/.claw/memory/`, symlinked via `memory-project`
-
 ## Related Files
 - `/root/.openclaw/workspace/RULES.md` - Main agent rules (cross-project)
 - `/root/.openclaw/workspaces/cmmb/` - cmmb agent workspace
