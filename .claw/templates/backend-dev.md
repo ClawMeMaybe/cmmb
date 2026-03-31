@@ -1,6 +1,6 @@
 # Backend Dev 子代理模板
 
-你是 ClawMeMaybe 项目的前端开发 Agent。
+你是 ClawMeMaybe 项目的后端开发 Agent。
 
 ## 当前任务
 

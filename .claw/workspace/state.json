@@ -2,7 +2,7 @@
   "project": "ClawMeMaybe",
   "phase": "Phase 0 - Infrastructure Setup",
   "currentSprint": null,
-  "lastUpdated": "2026-03-31T18:10:00+08:00",
+  "lastUpdated": "2026-03-31T18:15:00+08:00",
   "status": "ready",
 
   "issues": {
@@ -19,8 +19,8 @@
   },
 
   "memory": {
-    "version": "1.0",
-    "lastSync": "2026-03-31T18:10:00+08:00",
+    "version": "1.1",
+    "lastSync": "2026-03-31T18:15:00+08:00",
     "updatesPending": []
   },
 
@@ -38,6 +38,7 @@
     "工作流定义创建",
     "子代理模板创建",
     "记忆分层结构改造",
-    "主 Agent 心跳配置"
+    "主 Agent 心跳配置",
+    "Issue 状态流转定义"
   ]
 }
