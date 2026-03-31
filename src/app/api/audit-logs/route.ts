@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getAuditLogs, getAuditActionTypes } from "@/lib/audit";
-import type { ApiResponse, AuditLog } from "@/types";
+import type { ApiResponse } from "@/types";
 
 interface AuditLogWithUser {
   id: string;
