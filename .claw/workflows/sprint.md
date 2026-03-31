@@ -30,10 +30,11 @@ Runs every 15 minutes. Each run:
 1. Pulls latest code from GitHub
 2. Checks for open issues labeled `ready-for-dev`
 3. Picks the highest priority one (first by GitHub ordering)
-4. Marks it `in-progress` and comments on the issue
-5. Invokes Claude Code to implement it
-6. Claude Code creates a PR and updates labels
-7. Moves to the next issue if time permits
+4. **Assigns the issue**: `gh issue edit <number> --add-assignee "@me"`
+5. Marks it `in-progress` and comments on the issue
+6. Invokes Claude Code to implement it
+7. Claude Code creates a PR and updates labels
+8. Moves to the next issue if time permits
 
 ## Human Workflow
 
