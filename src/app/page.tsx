@@ -1,5 +1,18 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default function Home() {
-  redirect("/login");
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const cookieStore = await cookies();
+  const sessionUserId = cookieStore.get("session_user_id");
+
+  // If not authenticated, redirect to login
+  if (!sessionUserId) {
+    redirect("/login");
+  }
+
+  // If authenticated, redirect to instances
+  redirect("/instances");
 }

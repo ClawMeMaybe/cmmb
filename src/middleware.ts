@@ -12,6 +12,12 @@ const isPublicRoute = (pathname: string): boolean => {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Check for session cookie first (for debugging)
+  const sessionUserId = request.cookies.get("session_user_id")?.value;
+  console.log(
+    `[Middleware] ${pathname} - Cookie: ${sessionUserId ? "present" : "missing"}`
+  );
+
   // Allow public routes
   if (isPublicRoute(pathname)) {
     return NextResponse.next();
@@ -26,16 +32,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for session cookie
-  const sessionUserId = request.cookies.get("session_user_id")?.value;
-
   // If no session, redirect to login
   if (!sessionUserId) {
+    console.log(`[Middleware] Redirecting to login from ${pathname}`);
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
+  console.log(`[Middleware] Allowing access to ${pathname}`);
   return NextResponse.next();
 }
 
