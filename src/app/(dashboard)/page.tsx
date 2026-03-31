@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  Activity,
   Server,
   CheckCircle,
   XCircle,
@@ -15,8 +13,8 @@ import {
   Plus,
   Smartphone,
   MessageSquare,
-  Bot,
 } from "lucide-react";
+import { GatewayStatus } from "@/components/dashboard/gateway-status";
 
 interface DashboardStats {
   totalInstances: number;
@@ -32,14 +30,7 @@ interface PairedDevice {
   lastSeen?: string;
 }
 
-interface GatewayHealth {
-  status: string;
-  uptime?: number;
-  version?: string;
-}
-
 export default function DashboardPage() {
-  const router = useRouter();
   const [stats, setStats] = useState<DashboardStats>({
     totalInstances: 0,
     onlineInstances: 0,
@@ -47,9 +38,6 @@ export default function DashboardPage() {
     errorInstances: 0,
   });
   const [devices, setDevices] = useState<PairedDevice[]>([]);
-  const [gatewayHealth, setGatewayHealth] = useState<GatewayHealth | null>(
-    null
-  );
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -75,17 +63,6 @@ export default function DashboardPage() {
           ).length,
         };
         setStats(stats);
-      }
-
-      // Fetch OpenClaw Gateway health
-      try {
-        const healthRes = await fetch("http://localhost:18789/health");
-        if (healthRes.ok) {
-          const healthData = await healthRes.json();
-          setGatewayHealth(healthData);
-        }
-      } catch {
-        setGatewayHealth({ status: "offline" });
       }
 
       // Fetch paired devices count
@@ -148,39 +125,7 @@ export default function DashboardPage() {
       </div>
 
       {/* OpenClaw Gateway Status */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            OpenClaw Gateway
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-4">
-            {gatewayHealth?.status === "ok" ? (
-              <>
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <div>
-                  <p className="font-medium text-green-500">Connected</p>
-                  <p className="text-xs text-muted-foreground">
-                    Running on port 18789
-                  </p>
-                </div>
-              </>
-            ) : (
-              <>
-                <XCircle className="h-5 w-5 text-red-500" />
-                <div>
-                  <p className="font-medium text-red-500">Disconnected</p>
-                  <p className="text-xs text-muted-foreground">
-                    Gateway not reachable
-                  </p>
-                </div>
-              </>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      <GatewayStatus showDetails />
 
       {/* Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

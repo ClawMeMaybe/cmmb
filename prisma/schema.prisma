@@ -70,5 +70,8 @@ model AuditLog {
   instanceId String?
   instance   Instance? @relation(fields: [instanceId], references: [id])
 
+  channelId  String?
+  channel    Channel?  @relation(fields: [channelId], references: [id])
+
   @@map("audit_logs")
 }
