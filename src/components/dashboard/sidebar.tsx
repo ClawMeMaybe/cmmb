@@ -12,6 +12,7 @@ const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
   { href: "/instances/new", label: "Add Instance" },
+  { href: "/logs", label: "Logs" },
   { href: "/skills", label: "Skills" },
   { href: "/channels", label: "Channels" },
   { href: "/devices", label: "Devices" },
