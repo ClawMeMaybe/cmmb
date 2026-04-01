@@ -21,8 +21,10 @@ test.describe("Instances List", () => {
     // Check page title (use more specific selector)
     await expect(page.locator("h1")).toContainText("Instances");
 
-    // Check for the Add Instance button
-    await expect(page.locator('button:has-text("Add Instance")')).toBeVisible();
+    // Check for the Add Instance button (scoped to main to avoid strict mode violation)
+    await expect(
+      page.getByRole("main").getByRole("button", { name: "Add Instance" })
+    ).toBeVisible();
   });
 
   test("should show empty state or instance table", async ({ page }) => {

@@ -4,48 +4,111 @@
   "currentSprint": {
     "number": 2,
     "startDate": "2026-03-31",
-    "goals": ["#22", "#11", "#14"]
-  },
-  "lastUpdated": "2026-03-31T21:43:00+08:00",
-  "status": "in-progress",
-  "mode": "auto",
-
-  "issues": {
-    "backlog": [23, 24],
-    "ready": [23, 24],
-    "inProgress": [22, 14],
-    "review": [11],
-    "done": [9, 10, 12, 13, 16]
-  },
-
-  "issueDetails": {
-    "9": { "title": "Initialize Next.js Project Boilerplate", "status": "done" },
-    "10": { "title": "Research OpenClaw Gateway + Token Management", "status": "done" },
-    "11": { "title": "Monitoring Dashboard", "status": "review", "pr": 25 },
-    "12": { "title": "Instance CRUD Management", "status": "done" },
-    "13": { "title": "Admin Login Page and Authentication", "status": "done" },
-    "14": { "title": "Audit Log System", "status": "in-progress", "agent": "subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7" },
-    "16": { "title": "Replace Chinese text with English", "status": "done" },
-    "22": { "title": "Instance Start/Stop Actions", "status": "in-progress", "agent": "subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9" },
-    "23": { "title": "Deployment Validation and Production Setup", "status": "ready" },
-    "24": { "title": "E2E Testing with Playwright", "status": "ready" }
-  },
-
-  "subagents": {
-    "active": [
-      { "sessionKey": "agent:main:subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9", "issue": 22 },
-      { "sessionKey": "agent:main:subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7", "issue": 14 }
+    "goals": [
+      "#22",
+      "#11",
+      "#14"
     ]
   },
-
+  "lastUpdated": "2026-04-01T14:06:58+08:00",
+  "status": "in-progress",
+  "mode": "auto",
+  "issues": {
+    "backlog": [
+      23,
+      24
+    ],
+    "ready": [
+      23,
+      24
+    ],
+    "inProgress": [
+      22,
+      14
+    ],
+    "review": [
+      11
+    ],
+    "done": [
+      9,
+      10,
+      12,
+      13,
+      16
+    ]
+  },
+  "issueDetails": {
+    "9": {
+      "title": "Initialize Next.js Project Boilerplate",
+      "status": "done"
+    },
+    "10": {
+      "title": "Research OpenClaw Gateway + Token Management",
+      "status": "done"
+    },
+    "11": {
+      "title": "Monitoring Dashboard",
+      "status": "review",
+      "pr": 25
+    },
+    "12": {
+      "title": "Instance CRUD Management",
+      "status": "done"
+    },
+    "13": {
+      "title": "Admin Login Page and Authentication",
+      "status": "done"
+    },
+    "14": {
+      "title": "Audit Log System",
+      "status": "in-progress",
+      "agent": "subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7"
+    },
+    "16": {
+      "title": "Replace Chinese text with English",
+      "status": "done"
+    },
+    "22": {
+      "title": "Instance Start/Stop Actions",
+      "status": "in-progress",
+      "agent": "subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9"
+    },
+    "23": {
+      "title": "Deployment Validation and Production Setup",
+      "status": "ready"
+    },
+    "24": {
+      "title": "E2E Testing with Playwright",
+      "status": "ready"
+    }
+  },
+  "subagents": {
+    "active": [
+      {
+        "sessionKey": "agent:main:subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9",
+        "issue": 22
+      },
+      {
+        "sessionKey": "agent:main:subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7",
+        "issue": 14
+      }
+    ]
+  },
   "capacity": {
     "max": 3,
     "used": 2,
     "available": 1
   },
-
   "metrics": {
-    "sprint1": { "issuesCompleted": 5, "prsMerged": 5 },
-    "sprint2": { "issuesCompleted": 0, "issuesInReview": 1, "issuesInProgress": 2 }
-  }
+    "sprint1": {
+      "issuesCompleted": 5,
+      "prsMerged": 5
+    },
+    "sprint2": {
+      "issuesCompleted": 0,
+      "issuesInReview": 1,
+      "issuesInProgress": 2
+    }
+  },
+  "lastCompletedIssue": 82
 }
