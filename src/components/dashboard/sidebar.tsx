@@ -16,7 +16,8 @@ const navItems = [
   { href: "/channels", label: "Channels" },
   { href: "/devices", label: "Devices" },
   { href: "/users", label: "Users" },
-  { href: "/settings/gateway", label: "Settings" },
+  { href: "/settings/profile", label: "Profile" },
+  { href: "/settings/gateway", label: "Gateway" },
 ];
 
 export function Sidebar() {
