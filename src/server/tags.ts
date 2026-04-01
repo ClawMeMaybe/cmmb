@@ -114,7 +114,7 @@ export async function bulkTagOperation(data: {
   instanceIds: string[];
   tagIds: string[];
   action: "add" | "remove";
-  assignedBy: string;
+  addedById?: string;
 }): Promise<{ success: boolean; count: number }> {
   if (data.action === "add") {
     // Create instance-tag associations for all combinations
@@ -122,7 +122,7 @@ export async function bulkTagOperation(data: {
       data.tagIds.map((tagId) => ({
         instanceId,
         tagId,
-        assignedBy: data.assignedBy,
+        addedById: data.addedById ?? null,
       }))
     );
 

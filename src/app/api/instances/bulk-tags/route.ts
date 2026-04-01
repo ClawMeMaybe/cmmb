@@ -52,7 +52,7 @@ export async function POST(
       instanceIds,
       tagIds,
       action,
-      assignedBy: session.id,
+      addedById: session.id,
     });
 
     return NextResponse.json({
