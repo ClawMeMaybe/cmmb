@@ -4,8 +4,6 @@ export {
   InstanceStatus,
   ChannelType,
   ChannelStatus,
-  AlertSeverity,
-  AlertStatus,
 } from "@prisma/client";
 export type {
   User,
@@ -13,10 +11,6 @@ export type {
   Channel,
   AuditLog,
   Session,
-  AlertConfig,
-  Alert,
-  ApiKey,
-  ApiKeyUsage,
 } from "@prisma/client";
 
 // Device types
@@ -126,15 +120,44 @@ export type {
   FrontmatterContent,
 } from "./workspace";
 
-// API key types
+// Agent types
 export type {
-  ApiKeyScope,
-  ApiKeyCreateInput,
-  ApiKeyUpdateInput,
-  ApiKeyWithStats,
-  ApiKeyUsageLog,
-  ApiKeyUsageFilterOptions,
-  ApiKeyFilterOptions,
-  ApiKeyCreateResponse,
-} from "./api-keys";
-export { API_KEY_SCOPE_DESCRIPTIONS, API_KEY_SCOPE_GROUPS } from "./api-keys";
+  Agent,
+  AgentMetric,
+  AgentModelConfig,
+  AgentCapabilities,
+  AgentWithMetrics,
+  AgentMetricSummary,
+  AgentTestRequest,
+  AgentTestResponse,
+  AgentCreateInput,
+  AgentUpdateInput,
+  AgentFilters,
+  AgentMetricsQueryParams,
+  AvailableModelId,
+} from "./agent";
+export {
+  AgentStatus,
+  AVAILABLE_MODELS,
+  DEFAULT_AGENT_CONFIG,
+  DEFAULT_AGENT_CAPABILITIES,
+} from "./agent";
+
+// Plugin types
+export type {
+  Plugin,
+  PluginLog,
+  PluginWithLogs,
+  PluginSummary,
+  PluginCreateInput,
+  PluginUpdateInput,
+  PluginConfigUpdateInput,
+  PluginFilters,
+  PluginLogFilters,
+  PluginLogCreateInput,
+  PluginStatusResponse,
+  PluginInstallResult,
+  PluginUninstallResult,
+  PluginCategory,
+} from "./plugin";
+export { PluginStatus, PLUGIN_CATEGORIES } from "./plugin";
