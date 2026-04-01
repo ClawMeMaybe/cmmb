@@ -125,6 +125,7 @@ model Instance {
   auditLogs     AuditLog[]
   alerts        Alert[]
   metricHistory MetricHistory[]
+  agents        Agent[]
 
   @@map("instances")
 }
@@ -232,6 +233,80 @@ model AlertConfig {
 }
 
 // Alert instance - represents a specific alert event
+// Agent status
+enum AgentStatus {
+  ACTIVE
+  INACTIVE
+  TESTING
+  ERROR
+}
+
+// Agent model - represents OpenClaw agent configuration
+model Agent {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  model       String       @default("claude-sonnet-4-5") // AI model to use
+  systemPrompt String?
+  status      AgentStatus  @default(INACTIVE)
+  enabled     Boolean      @default(true)
+  config      Json?        // Additional configuration (temperature, max_tokens, etc.)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  instanceId  String?
+  instance    Instance?    @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  testRuns    AgentTestRun[]
+  metrics     AgentMetric[]
+
+  @@index([instanceId])
+  @@index([status])
+  @@map("agents")
+}
+
+// Agent test run - tracks test executions for the sandbox
+model AgentTestRun {
+  id        String   @id @default(cuid())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  input     String   // Test input message
+  output    String?  // Agent response
+  success   Boolean  @default(false)
+  duration  Int?     // Duration in milliseconds
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@index([agentId])
+  @@index([createdAt])
+  @@map("agent_test_runs")
+}
+
+// Agent metric - performance tracking
+model AgentMetric {
+  id           String   @id @default(cuid())
+  agentId      String
+  agent        Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  // Performance metrics
+  totalRuns    Int      @default(0)
+  successRate  Float    @default(0) // Percentage of successful runs
+  avgDuration  Float    @default(0) // Average response time in ms
+  lastRunAt    DateTime?
+
+  // Time bucket for aggregating metrics (daily)
+  date         DateTime @default(now())
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([agentId])
+  @@index([date])
+  @@unique([agentId, date]) // One metric record per agent per day
+  @@map("agent_metrics")
+}
+
 model Alert {
   id       String       @id @default(cuid())
   configId String?

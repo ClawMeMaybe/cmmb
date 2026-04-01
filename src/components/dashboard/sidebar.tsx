@@ -11,7 +11,7 @@ import { LogOut, Plus } from "lucide-react";
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
-  { href: "/instances/new", label: "Add Instance" },
+  { href: "/agents", label: "Agents" },
   { href: "/logs", label: "Logs" },
   { href: "/skills", label: "Skills" },
   { href: "/channels", label: "Channels" },
