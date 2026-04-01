@@ -38,13 +38,14 @@ function LoginForm() {
 
       if (!response.ok) {
         setError(data.error || "Login failed");
+        setLoading(false);
         return;
       }
 
-      router.push(redirect);
+      // Force a full page navigation to ensure cookie is picked up by middleware
+      window.location.href = redirect;
     } catch {
       setError("An error occurred. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
