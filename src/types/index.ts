@@ -69,3 +69,20 @@ export interface Skill extends SkillMetadata {
   enabled: boolean;
   content?: string;
 }
+
+// Workspace types
+export type {
+  WorkspaceFile,
+  WorkspaceFileContent,
+  MemoryType,
+  MemoryEntry,
+  MemoryEntryInput,
+  MemoryEntryUpdate,
+  RuleConfig,
+  RulesConfig,
+  WorkspaceBackupData,
+  BackupCreateInput,
+  WorkspaceDirectory,
+  WorkspaceStats,
+  FrontmatterContent,
+} from "./workspace";
