@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +33,7 @@ interface AlertsData {
   activeCount: number;
 }
 
-export default function AlertsPage() {
+function AlertsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [data, setData] = useState<AlertsData | null>(null);
@@ -51,11 +51,8 @@ export default function AlertsPage() {
       if (statusFilter) params.set("status", statusFilter);
       if (severityFilter) params.set("severity", severityFilter);
       params.set("page", page.toString());
-
       const response = await fetch(`/api/alerts?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch alerts");
-      }
+      if (!response.ok) throw new Error("Failed to fetch alerts");
       const result = await response.json();
       setData(result.data);
       setError(null);
@@ -78,12 +75,9 @@ export default function AlertsPage() {
 
   const handleFilterChange = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (value === "all") {
-      params.delete(key);
-    } else {
-      params.set(key, value);
-    }
-    params.set("page", "1"); // Reset to first page on filter change
+    if (value === "all") params.delete(key);
+    else params.set(key, value);
+    params.set("page", "1");
     router.push(`/alerts?${params.toString()}`);
   };
 
@@ -133,22 +127,19 @@ export default function AlertsPage() {
     }
   };
 
-  if (loading) {
+  if (loading)
     return (
       <div className="flex items-center justify-center p-8">
         <p>Loading...</p>
       </div>
     );
-  }
-
-  if (error) {
+  if (error)
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-8">
         <p className="text-destructive">{error}</p>
         <Button onClick={handleRefresh}>Retry</Button>
       </div>
     );
-  }
 
   const activeCount = data?.activeCount ?? 0;
 
@@ -180,7 +171,6 @@ export default function AlertsPage() {
         </div>
       </div>
 
-      {/* Filters */}
       <Card>
         <CardHeader>
           <CardTitle>Filters</CardTitle>
@@ -232,7 +222,6 @@ export default function AlertsPage() {
         </CardContent>
       </Card>
 
-      {/* Alert Summary */}
       {activeCount > 0 && (
         <Card className="border-red-500/50 bg-red-500/5">
           <CardContent className="flex items-center gap-4 py-4">
@@ -249,7 +238,6 @@ export default function AlertsPage() {
         </Card>
       )}
 
-      {/* Alert List */}
       {data && (
         <AlertList
           alerts={data.alerts}
@@ -275,5 +263,19 @@ export default function AlertsPage() {
         </Card>
       )}
     </div>
+  );
+}
+
+export default function AlertsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center p-8">
+          <p>Loading alerts...</p>
+        </div>
+      }
+    >
+      <AlertsContent />
+    </Suspense>
   );
 }
