@@ -18,7 +18,7 @@ test-results/
 .claude.json
 .claw/workspace/state.json
 *.log
-logs/
+/logs/
 
 # Prisma
 prisma/*.db
