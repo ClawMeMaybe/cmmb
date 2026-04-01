@@ -10,6 +10,33 @@ export type { User, Instance, Channel, AuditLog } from "@prisma/client";
 // Device types
 export type { PairedDevice, PairedDevices } from "./device";
 
+// Log types
+export type {
+  LogLevel,
+  LogSource,
+  LogEntry,
+  LogEntryResponse,
+  LogsQueryParams,
+  LogsPagination,
+  LogsApiResponse,
+  LogStreamMessageType,
+  LogStreamClientMessage,
+  LogStreamServerMessage,
+  LogFilterState,
+  LogExportFormat,
+  LogExportOptions,
+  LogStreamConnectionState,
+  UseLogStreamReturn,
+} from "./logs";
+export {
+  LOG_LEVEL_COLORS,
+  LOG_SOURCE_LABELS,
+  DEFAULT_LOG_LEVELS,
+  MAX_STREAM_LOGS,
+  DEFAULT_PAGE_SIZE,
+  MAX_PAGE_SIZE,
+} from "./logs";
+
 // API Response types
 export interface ApiResponse<T> {
   data?: T;

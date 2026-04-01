@@ -27,8 +27,8 @@ export interface GatewayInstanceStatus {
  * Client for interacting with OpenClaw Gateway API
  */
 export class GatewayClient {
-  private baseUrl: string;
-  private token: string;
+  protected baseUrl: string;
+  protected token: string;
 
   constructor(gatewayUrl: string, token: string) {
     this.baseUrl = gatewayUrl.replace(/\/$/, ""); // Remove trailing slash
@@ -38,7 +38,7 @@ export class GatewayClient {
   /**
    * Make an authenticated request to the Gateway API
    */
-  private async request<T>(
+  protected async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<GatewayResponse<T>> {
