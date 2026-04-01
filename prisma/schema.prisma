@@ -55,10 +55,27 @@ model User {
   updatedAt DateTime @updatedAt
 
   instances        Instance[]
+  sessions        Session[]
   auditLogs        AuditLog[]
   workspaceBackups WorkspaceBackup[]
 
   @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  token        String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastAccessed DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
 }
 
 model Instance {

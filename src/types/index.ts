@@ -5,7 +5,13 @@ export {
   ChannelType,
   ChannelStatus,
 } from "@prisma/client";
-export type { User, Instance, Channel, AuditLog } from "@prisma/client";
+export type {
+  User,
+  Instance,
+  Channel,
+  AuditLog,
+  Session,
+} from "@prisma/client";
 
 // Device types
 export type { PairedDevice, PairedDevices } from "./device";

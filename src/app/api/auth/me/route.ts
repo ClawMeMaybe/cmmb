@@ -10,6 +10,7 @@ export async function GET(): Promise<
         email: string;
         name: string | null;
         role: "ADMIN" | "VIEWER";
+        sessionId: string;
       };
     }>
   >
@@ -28,6 +29,7 @@ export async function GET(): Promise<
           email: user.email,
           name: user.name,
           role: user.role,
+          sessionId: user.sessionId,
         },
       },
     });
