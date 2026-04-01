@@ -102,3 +102,6 @@
 - Initial memory files created (architecture, conventions, domain-knowledge)
 - Project docs created (PROJECT.md, PLAN.md, AI-DEV-GUIDE.md, README-DEVOPS.md)
 <!-- source: initial -->
+
+## v2026.04.01 - 2026-04-01
+- Issue #82: #82 fix: E2E test strict mode violation on Add Instance button
