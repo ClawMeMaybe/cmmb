@@ -119,3 +119,26 @@ export type {
   WorkspaceStats,
   FrontmatterContent,
 } from "./workspace";
+
+// Agent types
+export type {
+  Agent,
+  AgentMetric,
+  AgentModelConfig,
+  AgentCapabilities,
+  AgentWithMetrics,
+  AgentMetricSummary,
+  AgentTestRequest,
+  AgentTestResponse,
+  AgentCreateInput,
+  AgentUpdateInput,
+  AgentFilters,
+  AgentMetricsQueryParams,
+  AvailableModelId,
+} from "./agent";
+export {
+  AgentStatus,
+  AVAILABLE_MODELS,
+  DEFAULT_AGENT_CONFIG,
+  DEFAULT_AGENT_CAPABILITIES,
+} from "./agent";

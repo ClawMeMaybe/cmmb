@@ -56,6 +56,14 @@ enum AlertStatus {
   RESOLVED    // Alert condition has been resolved
 }
 
+// Agent status
+enum AgentStatus {
+  ACTIVE      // Agent is active and operational
+  INACTIVE    // Agent is inactive/disabled
+  TESTING     // Agent is in testing mode
+  ERROR       // Agent has an error state
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -107,6 +115,7 @@ model Instance {
   auditLogs    AuditLog[]
   metricHistory MetricHistory[]
   alerts       Alert[]
+  agents       Agent[]
 
   @@index([createdById])
   @@map("instances")
@@ -153,6 +162,9 @@ model AuditLog {
 
   workspaceBackupId String?
   workspaceBackup   WorkspaceBackup? @relation(fields: [workspaceBackupId], references: [id])
+
+  agentId      String?
+  agent        Agent?    @relation(fields: [agentId], references: [id])
 
   @@map("audit_logs")
 }
@@ -254,4 +266,82 @@ model Alert {
   @@index([status])
   @@index([createdAt])
   @@map("alerts")
+}
+
+// Agent model - represents an OpenClaw agent configuration
+model Agent {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+
+  // Status
+  status      AgentStatus  @default(INACTIVE)
+  enabled     Boolean      @default(true)
+
+  // Model configuration
+  modelName   String       @default("claude-opus-4-6")
+  temperature Float        @default(0.7)
+  maxTokens   Int          @default(4096)
+  topP        Float        @default(1.0)
+  topK        Int          @default(0)
+
+  // System prompt
+  systemPrompt String?     @db.Text
+
+  // Capabilities and skills
+  capabilities Json?       // List of enabled capabilities
+
+  // Instance association
+  instanceId  String?
+  instance    Instance?    @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  // Testing sandbox
+  lastTestInput  String?   @db.Text
+  lastTestOutput String?   @db.Text
+  lastTestAt     DateTime?
+
+  // Error tracking
+  lastError   String?
+  lastErrorAt DateTime?
+
+  // Timestamps
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  auditLogs   AuditLog[]
+  metrics     AgentMetric[]
+
+  @@index([instanceId])
+  @@index([status])
+  @@index([name])
+  @@map("agents")
+}
+
+// Agent performance metrics
+model AgentMetric {
+  id           String   @id @default(cuid())
+  agentId      String
+  agent        Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  // Performance metrics
+  requestCount Int      @default(0)     // Total requests processed
+  successCount Int      @default(0)     // Successful responses
+  errorCount   Int      @default(0)     // Error responses
+  avgLatency   Float?   // Average response latency in ms
+
+  // Token usage
+  inputTokens  Int      @default(0)
+  outputTokens Int      @default(0)
+  totalTokens  Int      @default(0)
+
+  // Time period
+  periodStart  DateTime // Start of the metric period
+  periodEnd    DateTime // End of the metric period
+
+  createdAt    DateTime @default(now())
+
+  @@index([agentId])
+  @@index([periodStart])
+  @@map("agent_metrics")
 }
