@@ -23,6 +23,28 @@ enum InstanceStatus {
   ERROR
 }
 
+enum ChannelType {
+  WHATSAPP
+  TELEGRAM
+  DISCORD
+  SIGNAL
+  WECHAT
+  WEIBO
+  DINGTALK
+  FEISHU
+  WECOM
+  QQBOT
+  SLACK
+  OTHER
+}
+
+enum ChannelStatus {
+  ONLINE
+  OFFLINE
+  ERROR
+  CONFIGURING
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -33,7 +55,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   instances  Instance[]
-  auditLogs AuditLog[]
+  auditLogs  AuditLog[]
 
   @@map("users")
 }
@@ -49,26 +71,52 @@ model Instance {
   updatedAt   DateTime       @updatedAt
 
   createdById String
-  createdBy  User @relation(fields: [createdById], references: [id])
+  createdBy   User   @relation(fields: [createdById], references: [id])
 
-  auditLogs AuditLog[]
+  channels   Channel[]
+  auditLogs  AuditLog[]
 
   @@map("instances")
 }
 
+model Channel {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  type         ChannelType   @default(OTHER)
+  status       ChannelStatus @default(OFFLINE)
+  enabled      Boolean       @default(true)
+  accountId    String?
+  config       Json?
+  lastError    String?
+  lastInbound  DateTime?
+  lastOutbound DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  instanceId   String?
+  instance     Instance?     @relation(fields: [instanceId], references: [id])
+
+  auditLogs    AuditLog[]
+
+  @@map("channels")
+}
+
 model AuditLog {
-  id         String                      @id @default(cuid())
+  id         String    @id @default(cuid())
   action     String
   entityType String
   entityId   String
   details    Json?
-  createdAt  DateTime                    @default(now())
+  createdAt  DateTime  @default(now())
 
   userId     String
-  user       User   @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
 
   instanceId String?
   instance   Instance? @relation(fields: [instanceId], references: [id])
+
+  channelId  String?
+  channel    Channel?  @relation(fields: [channelId], references: [id])
 
   @@map("audit_logs")
 }

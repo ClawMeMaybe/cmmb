@@ -11,6 +11,7 @@ import { LogOut } from "lucide-react";
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
+  { href: "/channels", label: "Channels" },
   { href: "/devices", label: "Devices" },
   { href: "/settings/gateway", label: "Settings" },
 ];
