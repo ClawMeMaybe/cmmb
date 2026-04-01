@@ -1,17 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getInstances, createInstance } from "@/server/instances";
+import { getInstancesWithTags, createInstance } from "@/server/instances";
 import { InstanceStatus } from "@prisma/client";
 import type { ApiResponse, Instance } from "@/types";
+import type { InstanceWithTags } from "@/server/instances";
 
 /**
  * @openapi
  * /instances:
  *   get:
  *     summary: Get instance list
- *     description: Retrieve all OpenClaw instances
+ *     description: Retrieve all OpenClaw instances with optional tag filtering
  *     tags:
  *       - Instances
+ *     parameters:
+ *       - in: query
+ *         name: tags
+ *         schema:
+ *           type: string
+ *         description: Comma-separated tag IDs to filter by
  *     responses:
  *       '200':
  *         description: List of instances
@@ -80,7 +87,9 @@ import type { ApiResponse, Instance } from "@/types";
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
-export async function GET(): Promise<NextResponse<ApiResponse<Instance[]>>> {
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<ApiResponse<InstanceWithTags[]>>> {
   try {
     const session = await getSession();
 
@@ -88,7 +97,11 @@ export async function GET(): Promise<NextResponse<ApiResponse<Instance[]>>> {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const instances = await getInstances();
+    const { searchParams } = new URL(request.url);
+    const tagsParam = searchParams.get("tags");
+    const tagIds = tagsParam ? tagsParam.split(",").filter(Boolean) : undefined;
+
+    const instances = await getInstancesWithTags({ tagIds });
 
     return NextResponse.json({ data: instances });
   } catch (error) {
@@ -111,7 +124,7 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { name, description, gatewayUrl, token } = body;
+    const { name, description, gatewayUrl, token, tagIds } = body;
 
     if (!name || !gatewayUrl || !token) {
       return NextResponse.json(
@@ -127,6 +140,7 @@ export async function POST(
       gatewayUrl,
       token,
       createdById: session.id,
+      tagIds,
     });
 
     return NextResponse.json(

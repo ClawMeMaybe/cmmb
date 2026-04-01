@@ -88,6 +88,7 @@ model User {
   auditLogs          AuditLog[]
   workspaceBackups   WorkspaceBackup[]
   acknowledgedAlerts Alert[]
+  assignedTags       InstanceTag[]
 
   @@map("users")
 }
@@ -126,6 +127,7 @@ model Instance {
   alerts        Alert[]
   metricHistory MetricHistory[]
   agents        Agent[]
+  tags          InstanceTag[]
 
   @@map("instances")
 }
@@ -388,4 +390,37 @@ model ApiKeyUsage {
   @@index([apiKeyId])
   @@index([createdAt])
   @@map("api_key_usages")
+}
+
+// Tag model for instance tagging
+model Tag {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  color       String   @default("#6B7280") // Default gray color
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  instances InstanceTag[]
+
+  @@index([name])
+  @@map("tags")
+}
+
+// Instance-Tag association (many-to-many)
+model InstanceTag {
+  id         String   @id @default(cuid())
+  instanceId String
+  tagId      String
+  addedById   String?
+  addedAt    DateTime @default(now())
+
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  addedBy  User?    @relation(fields: [addedById], references: [id])
+
+  @@unique([instanceId, tagId]) // Prevent duplicate tags
+  @@index([instanceId])
+  @@index([tagId])
+  @@map("instance_tags")
 }

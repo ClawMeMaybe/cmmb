@@ -13,14 +13,18 @@ export type {
   Instance,
   Channel,
   AuditLog,
-  Session,
-  AlertConfig,
   Alert,
-  ApiKey,
-  ApiKeyUsage,
+  AlertConfig,
+  Tag,
+  InstanceTag,
   Agent,
   AgentTestRun,
   AgentMetric,
+  ApiKey,
+  ApiKeyUsage,
+  Session,
+  WorkspaceBackup,
+  MetricHistory,
 } from "@prisma/client";
 
 // Device types

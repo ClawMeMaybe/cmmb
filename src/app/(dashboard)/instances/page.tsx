@@ -19,8 +19,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import type { Instance } from "@/types";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TagFilter } from "@/components/instances/tag-filter";
+import { BulkTagDialog } from "@/components/instances/bulk-tag-dialog";
+import { Tags, Edit2 } from "lucide-react";
+import type { Tag } from "@/types";
 import type { InstanceStatus } from "@prisma/client";
+import type { InstanceWithTags } from "@/server/instances";
 
 const statusColors: Record<InstanceStatus, string> = {
   ONLINE: "bg-green-500",
@@ -31,30 +36,76 @@ const statusColors: Record<InstanceStatus, string> = {
 };
 
 export default function InstancesPage() {
-  const [instances, setInstances] = useState<Instance[]>([]);
+  const [instances, setInstances] = useState<InstanceWithTags[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [selectedInstances, setSelectedInstances] = useState<string[]>([]);
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
 
   useEffect(() => {
-    async function fetchInstances() {
-      try {
-        const response = await fetch("/api/instances");
-        if (!response.ok) {
-          throw new Error("Failed to fetch instances");
-        }
-        const data = await response.json();
-        setInstances(data.data || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchInstances();
+    fetchTags();
   }, []);
 
-  if (loading) {
+  useEffect(() => {
+    fetchInstances();
+  }, [selectedTagIds]);
+
+  const fetchTags = async () => {
+    try {
+      const response = await fetch("/api/tags");
+      if (response.ok) {
+        const data = await response.json();
+        setTags(data.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch tags:", error);
+    }
+  };
+
+  const fetchInstances = async () => {
+    try {
+      setLoading(true);
+      const url =
+        selectedTagIds.length > 0
+          ? `/api/instances?tags=${selectedTagIds.join(",")}`
+          : "/api/instances";
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch instances");
+      }
+      const data = await response.json();
+      setInstances(data.data || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInstanceToggle = (instanceId: string) => {
+    if (selectedInstances.includes(instanceId)) {
+      setSelectedInstances(selectedInstances.filter((id) => id !== instanceId));
+    } else {
+      setSelectedInstances([...selectedInstances, instanceId]);
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectedInstances.length === instances.length) {
+      setSelectedInstances([]);
+    } else {
+      setSelectedInstances(instances.map((i) => i.id));
+    }
+  };
+
+  const handleBulkComplete = () => {
+    setSelectedInstances([]);
+    fetchInstances();
+  };
+
+  if (loading && instances.length === 0) {
     return (
       <div className="flex items-center justify-center p-8">
         <p>Loading...</p>
@@ -86,21 +137,50 @@ export default function InstancesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>All Instances</CardTitle>
-          <CardDescription>
-            A list of all registered OpenClaw instances
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>All Instances</CardTitle>
+              <CardDescription>
+                A list of all registered OpenClaw instances
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <TagFilter
+                selectedTagIds={selectedTagIds}
+                onSelectionChange={setSelectedTagIds}
+              />
+              {tags.length > 0 && selectedInstances.length > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setBulkDialogOpen(true)}
+                >
+                  <Tags className="mr-2 h-4 w-4" />
+                  Bulk Tag ({selectedInstances.length})
+                </Button>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           {instances.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              No instances found. Add your first instance to get started.
+              {selectedTagIds.length > 0
+                ? "No instances found with the selected tags."
+                : "No instances found. Add your first instance to get started."}
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={selectedInstances.length === instances.length}
+                      onCheckedChange={handleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>Name</TableHead>
+                  <TableHead>Tags</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Gateway URL</TableHead>
                   <TableHead>Created</TableHead>
@@ -110,6 +190,14 @@ export default function InstancesPage() {
               <TableBody>
                 {instances.map((instance) => (
                   <TableRow key={instance.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedInstances.includes(instance.id)}
+                        onCheckedChange={() =>
+                          handleInstanceToggle(instance.id)
+                        }
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">
                       <Link
                         href={`/instances/${instance.id}`}
@@ -117,6 +205,18 @@ export default function InstancesPage() {
                       >
                         {instance.name}
                       </Link>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1 flex-wrap">
+                        {instance.tags.map((instanceTag) => (
+                          <Badge
+                            key={instanceTag.tagId}
+                            style={{ backgroundColor: instanceTag.tag.color }}
+                          >
+                            {instanceTag.tag.name}
+                          </Badge>
+                        ))}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -134,7 +234,7 @@ export default function InstancesPage() {
                     <TableCell className="text-right">
                       <Link href={`/instances/${instance.id}`}>
                         <Button variant="ghost" size="sm">
-                          View
+                          <Edit2 className="h-4 w-4" />
                         </Button>
                       </Link>
                     </TableCell>
@@ -145,6 +245,14 @@ export default function InstancesPage() {
           )}
         </CardContent>
       </Card>
+
+      <BulkTagDialog
+        open={bulkDialogOpen}
+        onOpenChange={setBulkDialogOpen}
+        instances={instances}
+        tags={tags}
+        onComplete={handleBulkComplete}
+      />
     </div>
   );
 }
