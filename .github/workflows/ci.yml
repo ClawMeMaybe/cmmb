@@ -39,6 +39,9 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Clean Next.js cache
+        run: rm -rf .next
+
       - name: Run type check
         run: npm run type-check
 
