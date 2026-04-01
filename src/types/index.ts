@@ -119,3 +119,22 @@ export type {
   WorkspaceStats,
   FrontmatterContent,
 } from "./workspace";
+
+// Conversation types
+export type {
+  ConversationWithMessages,
+  ConversationListItem,
+  MessageWithReplies,
+  ConversationFilters,
+  ConversationPagination,
+  ConversationListResponse,
+  ConversationExportOptions,
+  ConversationExportResponse,
+  MessageSearchResult,
+  MessageSearchResponse,
+} from "./conversation";
+export {
+  ConversationStatus,
+  MessageDirection,
+  MessageStatus,
+} from "./conversation";
