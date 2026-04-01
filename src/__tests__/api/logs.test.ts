@@ -53,6 +53,7 @@ describe("Logs API", () => {
         email: "admin@clawmemaybe.com",
         name: "Admin",
         role: "ADMIN",
+        sessionId: "session-id",
       });
 
       vi.mocked(getLogs).mockResolvedValueOnce({
@@ -89,6 +90,7 @@ describe("Logs API", () => {
         email: "admin@clawmemaybe.com",
         name: "Admin",
         role: "ADMIN",
+        sessionId: "session-id",
       });
 
       vi.mocked(getLogs).mockResolvedValueOnce({
@@ -124,6 +126,7 @@ describe("Logs API", () => {
         email: "admin@clawmemaybe.com",
         name: "Admin",
         role: "ADMIN",
+        sessionId: "session-id",
       });
 
       const request = createRequest({ level: "invalid" });
@@ -140,6 +143,7 @@ describe("Logs API", () => {
         email: "admin@clawmemaybe.com",
         name: "Admin",
         role: "ADMIN",
+        sessionId: "session-id",
       });
 
       const request = createRequest({ source: "invalid" });
