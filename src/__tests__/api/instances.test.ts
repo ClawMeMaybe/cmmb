@@ -59,6 +59,7 @@ const mockUser = {
   email: "admin@clawmemaybe.com",
   name: "Admin",
   role: "ADMIN" as const,
+  sessionId: "session-admin-123",
 };
 
 const mockInstance = {

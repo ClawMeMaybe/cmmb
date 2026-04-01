@@ -5,7 +5,13 @@ export {
   ChannelType,
   ChannelStatus,
 } from "@prisma/client";
-export type { User, Instance, Channel, AuditLog } from "@prisma/client";
+export type {
+  User,
+  Instance,
+  Channel,
+  AuditLog,
+  Session,
+} from "@prisma/client";
 
 // Device types
 export type { PairedDevice, PairedDevices } from "./device";
@@ -69,3 +75,20 @@ export interface Skill extends SkillMetadata {
   enabled: boolean;
   content?: string;
 }
+
+// Workspace types
+export type {
+  WorkspaceFile,
+  WorkspaceFileContent,
+  MemoryType,
+  MemoryEntry,
+  MemoryEntryInput,
+  MemoryEntryUpdate,
+  RuleConfig,
+  RulesConfig,
+  WorkspaceBackupData,
+  BackupCreateInput,
+  WorkspaceDirectory,
+  WorkspaceStats,
+  FrontmatterContent,
+} from "./workspace";

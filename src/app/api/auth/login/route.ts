@@ -14,12 +14,17 @@ type SafeUser = {
   updatedAt: Date;
 };
 
+type LoginResponse = {
+  user: SafeUser;
+  sessionExpiresAt: string;
+};
+
 export async function POST(
   request: NextRequest
-): Promise<NextResponse<ApiResponse<{ user: SafeUser }>>> {
+): Promise<NextResponse<ApiResponse<LoginResponse>>> {
   try {
     const body = await request.json();
-    const { email, password } = body;
+    const { email, password, rememberMe } = body;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -66,15 +71,31 @@ export async function POST(
       );
     }
 
-    await createSession(user.id);
+    // Create session with device info
+    const userAgent = request.headers.get("user-agent") ?? undefined;
+    const ipAddress =
+      request.headers.get("x-forwarded-for")?.split(",")[0] ?? undefined;
+
+    const session = await createSession({
+      userId: user.id,
+      userAgent,
+      ipAddress,
+      rememberMe: Boolean(rememberMe),
+    });
 
     // Log successful login
     await createAuditLog({
       action: AuditActions.LOGIN,
       entityType: EntityTypes.SESSION,
-      entityId: user.id,
+      entityId: session.id,
       userId: user.id,
-      details: { email, loginMethod: "password" },
+      details: {
+        email,
+        loginMethod: "password",
+        rememberMe: Boolean(rememberMe),
+        userAgent,
+        ipAddress,
+      },
     }).catch(console.error);
 
     return NextResponse.json({
@@ -87,6 +108,7 @@ export async function POST(
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },
+        sessionExpiresAt: session.expiresAt.toISOString(),
       },
       message: "Login successful",
     });

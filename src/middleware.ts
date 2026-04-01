@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Check for session cookie first (for debugging)
-  const sessionUserId = request.cookies.get("session_user_id")?.value;
+  const sessionUserId = request.cookies.get("session_token")?.value;
   console.log(
     `[Middleware] ${pathname} - Cookie: ${sessionUserId ? "present" : "missing"}`
   );

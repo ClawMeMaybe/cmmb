@@ -6,16 +6,20 @@ import type { ApiResponse } from "@/types";
 export async function POST(): Promise<NextResponse<ApiResponse<null>>> {
   try {
     const session = await getSession();
+    const sessionId = session?.sessionId;
+    const userId = session?.id;
+    const email = session?.email;
+
     await clearSession();
 
     // Log logout if user was logged in
-    if (session) {
+    if (sessionId && userId) {
       await createAuditLog({
         action: AuditActions.LOGOUT,
         entityType: EntityTypes.SESSION,
-        entityId: session.id,
-        userId: session.id,
-        details: { email: session.email },
+        entityId: sessionId,
+        userId,
+        details: { email },
       }).catch(console.error);
     }
 

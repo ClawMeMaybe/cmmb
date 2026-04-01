@@ -54,10 +54,28 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instances  Instance[]
-  auditLogs  AuditLog[]
+  instances        Instance[]
+  sessions        Session[]
+  auditLogs        AuditLog[]
+  workspaceBackups WorkspaceBackup[]
 
   @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  token        String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastAccessed DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
 }
 
 model Instance {
@@ -118,5 +136,24 @@ model AuditLog {
   channelId  String?
   channel    Channel?  @relation(fields: [channelId], references: [id])
 
+  workspaceBackupId String?
+  workspaceBackup   WorkspaceBackup? @relation(fields: [workspaceBackupId], references: [id])
+
   @@map("audit_logs")
+}
+
+model WorkspaceBackup {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  filePath    String   // Path to backup archive in storage
+  size        Int      // File size in bytes
+  createdAt   DateTime @default(now())
+
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+
+  auditLogs   AuditLog[]
+
+  @@map("workspace_backups")
 }

@@ -1,12 +1,32 @@
 import { cookies } from "next/headers";
 import { prisma } from "./prisma";
-import type { Role } from "@prisma/client";
+import type { Role, Session } from "@prisma/client";
+
+// Session configuration
+export const SESSION_CONFIG = {
+  // Default session duration (24 hours)
+  DEFAULT_DURATION_HOURS: 24,
+  // Remember me session duration (30 days)
+  REMEMBER_ME_DURATION_DAYS: 30,
+  // Session token cookie name
+  COOKIE_NAME: "session_token",
+  // Cleanup interval for expired sessions (in hours)
+  CLEANUP_INTERVAL_HOURS: 1,
+};
 
 export interface SessionUser {
   id: string;
   email: string;
   name: string | null;
   role: Role;
+  sessionId: string;
+}
+
+export interface CreateSessionOptions {
+  userId: string;
+  userAgent?: string;
+  ipAddress?: string;
+  rememberMe?: boolean;
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -25,16 +45,50 @@ export async function verifyPassword(
   return passwordHash === hash;
 }
 
-export async function createSession(userId: string): Promise<string> {
-  const sessionId = crypto.randomUUID();
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+/**
+ * Generate a secure session token
+ */
+function generateSessionToken(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
 
-  // Store session in database (we'll need a Session model later)
-  // For now, we'll use a simple cookie-based session
+/**
+ * Create a new session for a user
+ */
+export async function createSession(
+  options: CreateSessionOptions
+): Promise<Session> {
+  const token = generateSessionToken();
+
+  // Calculate expiration time based on rememberMe option
+  const expiresAt = options.rememberMe
+    ? new Date(
+        Date.now() +
+          SESSION_CONFIG.REMEMBER_ME_DURATION_DAYS * 24 * 60 * 60 * 1000
+      )
+    : new Date(
+        Date.now() + SESSION_CONFIG.DEFAULT_DURATION_HOURS * 60 * 60 * 1000
+      );
+
+  // Create session in database
+  const session = await prisma.session.create({
+    data: {
+      token,
+      userId: options.userId,
+      userAgent: options.userAgent ?? null,
+      ipAddress: options.ipAddress ?? null,
+      expiresAt,
+    },
+  });
+
+  // Set cookie
   const cookieStore = await cookies();
-  cookieStore.set("session_user_id", userId, {
+  cookieStore.set(SESSION_CONFIG.COOKIE_NAME, token, {
     httpOnly: true,
-    // Don't require HTTPS for localhost development
     secure:
       process.env.NODE_ENV === "production" && process.env.HTTPS === "true",
     sameSite: "lax",
@@ -42,37 +96,182 @@ export async function createSession(userId: string): Promise<string> {
     path: "/",
   });
 
-  return sessionId;
+  return session;
 }
 
+/**
+ * Get the current session from the cookie
+ */
 export async function getSession(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
-  const userId = cookieStore.get("session_user_id")?.value;
+  const token = cookieStore.get(SESSION_CONFIG.COOKIE_NAME)?.value;
 
-  if (!userId) {
+  if (!token) {
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      email: true,
-      name: true,
-      role: true,
+  // Find session in database
+  const session = await prisma.session.findUnique({
+    where: { token },
+    include: {
+      user: {
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          role: true,
+        },
+      },
     },
   });
 
-  if (!user) {
+  if (!session) {
+    // Invalid token, clear cookie
+    cookieStore.delete(SESSION_CONFIG.COOKIE_NAME);
     return null;
   }
 
-  return user;
+  // Check if session is expired
+  if (session.expiresAt < new Date()) {
+    // Delete expired session
+    await prisma.session.delete({ where: { id: session.id } });
+    cookieStore.delete(SESSION_CONFIG.COOKIE_NAME);
+    return null;
+  }
+
+  // Update last accessed time
+  await prisma.session.update({
+    where: { id: session.id },
+    data: { lastAccessed: new Date() },
+  });
+
+  return {
+    id: session.user.id,
+    email: session.user.email,
+    name: session.user.name,
+    role: session.user.role,
+    sessionId: session.id,
+  };
 }
 
+/**
+ * Clear the current session
+ */
 export async function clearSession(): Promise<void> {
   const cookieStore = await cookies();
-  cookieStore.delete("session_user_id");
+  const token = cookieStore.get(SESSION_CONFIG.COOKIE_NAME)?.value;
+
+  if (token) {
+    // Delete session from database
+    await prisma.session.deleteMany({ where: { token } }).catch(() => {
+      // Ignore errors if session doesn't exist
+    });
+  }
+
+  cookieStore.delete(SESSION_CONFIG.COOKIE_NAME);
+}
+
+/**
+ * Get all active sessions for a user
+ */
+export async function getUserSessions(userId: string): Promise<
+  Array<{
+    id: string;
+    userAgent: string | null;
+    ipAddress: string | null;
+    createdAt: Date;
+    lastAccessed: Date;
+    expiresAt: Date;
+    isCurrent: boolean;
+  }>
+> {
+  const cookieStore = await cookies();
+  const currentToken = cookieStore.get(SESSION_CONFIG.COOKIE_NAME)?.value;
+
+  // Get all non-expired sessions for the user
+  const sessions = await prisma.session.findMany({
+    where: {
+      userId,
+      expiresAt: { gte: new Date() },
+    },
+    orderBy: { lastAccessed: "desc" },
+  });
+
+  return sessions.map((session) => ({
+    id: session.id,
+    userAgent: session.userAgent,
+    ipAddress: session.ipAddress,
+    createdAt: session.createdAt,
+    lastAccessed: session.lastAccessed,
+    expiresAt: session.expiresAt,
+    isCurrent: session.token === currentToken,
+  }));
+}
+
+/**
+ * Revoke a specific session
+ */
+export async function revokeSession(
+  sessionId: string,
+  userId: string
+): Promise<boolean> {
+  const cookieStore = await cookies();
+  const currentToken = cookieStore.get(SESSION_CONFIG.COOKIE_NAME)?.value;
+
+  // Find the session to revoke
+  const session = await prisma.session.findFirst({
+    where: { id: sessionId, userId },
+  });
+
+  if (!session) {
+    return false;
+  }
+
+  // Delete the session
+  await prisma.session.delete({ where: { id: sessionId } });
+
+  // If revoking current session, also clear the cookie
+  if (session.token === currentToken) {
+    cookieStore.delete(SESSION_CONFIG.COOKIE_NAME);
+  }
+
+  return true;
+}
+
+/**
+ * Revoke all sessions except the current one
+ */
+export async function revokeOtherSessions(userId: string): Promise<number> {
+  const cookieStore = await cookies();
+  const currentToken = cookieStore.get(SESSION_CONFIG.COOKIE_NAME)?.value;
+
+  // Find current session to exclude
+  const currentSession = currentToken
+    ? await prisma.session.findUnique({ where: { token: currentToken } })
+    : null;
+
+  // Delete all other sessions
+  const result = await prisma.session.deleteMany({
+    where: {
+      userId,
+      id: currentSession ? { not: currentSession.id } : undefined,
+    },
+  });
+
+  return result.count;
+}
+
+/**
+ * Clean up expired sessions (can be called periodically)
+ */
+export async function cleanupExpiredSessions(): Promise<number> {
+  const result = await prisma.session.deleteMany({
+    where: {
+      expiresAt: { lt: new Date() },
+    },
+  });
+
+  return result.count;
 }
 
 /**
