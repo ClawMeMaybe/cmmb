@@ -6,6 +6,7 @@ export {
   ChannelStatus,
   AlertSeverity,
   AlertStatus,
+  AgentStatus,
 } from "@prisma/client";
 export type {
   User,
@@ -17,6 +18,9 @@ export type {
   Alert,
   ApiKey,
   ApiKeyUsage,
+  Agent,
+  AgentTestRun,
+  AgentMetric,
 } from "@prisma/client";
 
 // Device types
@@ -138,3 +142,14 @@ export type {
   ApiKeyCreateResponse,
 } from "./api-keys";
 export { API_KEY_SCOPE_DESCRIPTIONS, API_KEY_SCOPE_GROUPS } from "./api-keys";
+
+// Agent types
+export type {
+  AgentConfig,
+  AgentInput,
+  AgentTestInput,
+  AgentTestResult,
+  AgentPerformanceSummary,
+  ModelId,
+} from "./agent";
+export { AVAILABLE_MODELS, AGENT_STATUS_COLORS } from "./agent";
