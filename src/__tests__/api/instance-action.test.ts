@@ -54,6 +54,7 @@ function createParams(id: string) {
 
 const mockAdminUser = {
   id: "user-123",
+  sessionId: "session-123",
   email: "admin@clawmemaybe.com",
   name: "Admin",
   role: "ADMIN" as const,
@@ -61,6 +62,7 @@ const mockAdminUser = {
 
 const mockViewerUser = {
   id: "user-456",
+  sessionId: "session-456",
   email: "viewer@clawmemaybe.com",
   name: "Viewer",
   role: "VIEWER" as const,

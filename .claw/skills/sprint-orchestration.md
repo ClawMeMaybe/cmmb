@@ -172,31 +172,75 @@ Implement GitHub Issue #{N}: {title}
 Use: feat/{N}-{short-slug} for features, fix/{N}-{short-slug} for bugs
 ```
 
-### 2.3 Spawn via Claude Code (coding-agent skill)
+### 2.3 Dispatch via Background Claude Code Process
 
-Use the `coding-agent` skill pattern to delegate implementation:
+CRITICAL: Claude Code must handle the ENTIRE flow including branch creation, commit, push, and PR creation. The orchestrator (cmmb-pm) does NOT wait for completion — it fires and forgets.
+
+For each issue:
 
 ```bash
-# For each issue, spawn Claude Code with the task
 cd /home/claude/projects/cmmb
 
-# Create feature branch first
+# Step 1: Create feature branch
 git checkout main
 git pull --rebase origin main
-git checkout -b {branch-name}
+git checkout -b {branch-name} 2>/dev/null || git checkout {branch-name}
 
-# Write task to temp file (avoids quoting issues)
+# Step 2: Write comprehensive task to temp file
 TASK_FILE="/tmp/cmmb-sprint-task-{N}.txt"
 cat > "$TASK_FILE" << 'TASK_EOF'
-{full task prompt from 2.2}
+{full task prompt from 2.2 — MUST include the complete instructions below}
+
+## CRITICAL: You MUST complete ALL these steps in order:
+
+1. Read the relevant existing code first
+2. Implement the fix/feature following your role standards
+3. Run: npm run lint && npm run type-check && npm test -- --run
+4. Fix any issues found
+5. Commit ALL changes:
+   git add -A
+   git commit -m "{conventional commit message}: {description}
+
+Fixes #{N}"
+6. Push the branch:
+   git push -u origin {branch-name}
+7. Create a PR:
+   gh pr create \
+     --title "{conventional commit message} (closes #{N})" \
+     --body "## Summary
+
+{one paragraph description}
+
+## Changes
+
+- {bullet list of changes}
+
+## Self-Test Report
+
+| Check | Status |
+|-------|--------|
+| Lint | Passed |
+| Type Check | Passed |
+| Tests | Passed |
+
+Fixes #{N}" \
+     --label "{appropriate labels}"
+8. Report the PR URL
+
+If you cannot complete any step, explain WHY and stop.
 TASK_EOF
 chmod 644 "$TASK_FILE"
 
-# Execute via Claude Code
-claude --permission-mode bypassPermissions --print "$(cat $TASK_FILE)" 2>&1 | tee /tmp/cmmb-sprint-output-{N}.log
+# Step 3: Execute Claude Code in BACKGROUND (fire and forget)
+nohup su - claude -c "cd /home/claude/projects/cmmb && claude --permission-mode bypassPermissions --print \"\$(cat ${TASK_FILE})\" > /tmp/cmmb-sprint-output-{N}.log 2>&1" &>/dev/null &
 
-rm -f "$TASK_FILE"
+echo "Dispatched #{N} to Claude Code (PID: $!)"
+
+# Clean up temp file after a delay (give Claude Code time to read it)
+(sleep 5 && rm -f "$TASK_FILE") &
 ```
+
+The orchestrator moves to the next issue immediately. Claude Code runs in the background.
 
 ### 2.4 Track Dispatch
 
