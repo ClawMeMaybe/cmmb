@@ -5,15 +5,20 @@ import { InstanceStatus } from "@prisma/client";
 import type { ApiResponse, Instance } from "@/types";
 import type { InstanceWithTags } from "@/server/instances";
 
-<<<<<<< HEAD
 /**
  * @openapi
  * /instances:
  *   get:
  *     summary: Get instance list
- *     description: Retrieve all OpenClaw instances
+ *     description: Retrieve all OpenClaw instances with optional tag filtering
  *     tags:
  *       - Instances
+ *     parameters:
+ *       - in: query
+ *         name: tags
+ *         schema:
+ *           type: string
+ *         description: Comma-separated tag IDs to filter by
  *     responses:
  *       '200':
  *         description: List of instances
@@ -82,12 +87,9 @@ import type { InstanceWithTags } from "@/server/instances";
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 
-export async function GET(): Promise<NextResponse<ApiResponse<Instance[]>>> {
-=======
 export async function GET(
   request: NextRequest
 ): Promise<NextResponse<ApiResponse<InstanceWithTags[]>>> {
->>>>>>> 6edde1a (feat: implement instance tags and filtering system)
   try {
     const session = await getSession();
 

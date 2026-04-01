@@ -5,9 +5,11 @@ export interface CreateAlertOptions {
   title: string;
   message: string;
   severity?: AlertSeverity;
-  source?: string;
+  metricType?: string;
+  metricValue?: number;
+  threshold?: number;
   instanceId?: string;
-  metadata?: Record<string, unknown>;
+  details?: Record<string, unknown>;
 }
 
 export interface UpdateAlertOptions {
@@ -29,8 +31,8 @@ export interface GetAlertsOptions {
  * Create a new alert
  */
 export async function createAlert(options: CreateAlertOptions): Promise<Alert> {
-  const metadataValue = options.metadata
-    ? (JSON.parse(JSON.stringify(options.metadata)) as Prisma.InputJsonValue)
+  const detailsValue = options.details
+    ? (JSON.parse(JSON.stringify(options.details)) as Prisma.InputJsonValue)
     : undefined;
 
   return prisma.alert.create({
@@ -38,9 +40,11 @@ export async function createAlert(options: CreateAlertOptions): Promise<Alert> {
       title: options.title,
       message: options.message,
       severity: options.severity ?? "WARNING",
-      source: options.source ?? "system",
+      metricType: options.metricType ?? "unknown",
+      metricValue: options.metricValue ?? null,
+      threshold: options.threshold ?? null,
       instanceId: options.instanceId ?? null,
-      metadata: metadataValue,
+      details: detailsValue,
     },
     include: {
       instance: {

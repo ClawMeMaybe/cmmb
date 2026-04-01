@@ -75,6 +75,7 @@ const mockAdminUser = {
   email: "admin@clawmemaybe.com",
   name: "Admin",
   role: "ADMIN" as const,
+  sessionId: "session-123",
 };
 
 const mockViewerUser = {
@@ -82,12 +83,14 @@ const mockViewerUser = {
   email: "viewer@clawmemaybe.com",
   name: "Viewer",
   role: "VIEWER" as const,
+  sessionId: "session-456",
 };
 
 const mockTag = {
   id: "tag-123",
   name: "Production",
   color: "#6B7280",
+  description: null,
   createdAt: new Date("2024-01-01T00:00:00Z"),
   updatedAt: new Date("2024-01-01T00:00:00Z"),
 };
@@ -98,10 +101,11 @@ const mockTagWithCount = {
 };
 
 const mockInstanceTag = {
+  id: "instance-tag-123",
   instanceId: "instance-123",
   tagId: "tag-123",
-  assignedAt: new Date("2024-01-01T00:00:00Z"),
-  assignedBy: "user-123",
+  addedAt: new Date("2024-01-01T00:00:00Z"),
+  addedById: "user-123",
   tag: mockTag,
 };
 
@@ -471,7 +475,7 @@ describe("Tags API", () => {
           data: expect.objectContaining({
             instanceId: "instance-123",
             tagId: "tag-123",
-            assignedBy: "user-123",
+            addedById: "user-123",
           }),
         })
       );
@@ -666,12 +670,12 @@ describe("Tags API", () => {
             expect.objectContaining({
               instanceId: "instance-123",
               tagId: "tag-123",
-              assignedBy: "user-123",
+              addedById: "user-123",
             }),
             expect.objectContaining({
               instanceId: "instance-456",
               tagId: "tag-123",
-              assignedBy: "user-123",
+              addedById: "user-123",
             }),
           ]),
           skipDuplicates: true,

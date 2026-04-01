@@ -11,13 +11,10 @@ import { LogOut, Plus, Bell } from "lucide-react";
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
-<<<<<<< HEAD
   { href: "/agents", label: "Agents" },
   { href: "/logs", label: "Logs" },
-=======
   { href: "/alerts", label: "Alerts", icon: Bell },
   { href: "/tags", label: "Tags" },
->>>>>>> 6edde1a (feat: implement instance tags and filtering system)
   { href: "/skills", label: "Skills" },
   { href: "/channels", label: "Channels" },
   { href: "/devices", label: "Devices" },

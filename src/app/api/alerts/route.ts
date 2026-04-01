@@ -77,7 +77,16 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { title, message, severity, source, instanceId, metadata } = body;
+    const {
+      title,
+      message,
+      severity,
+      metricType,
+      metricValue,
+      threshold,
+      instanceId,
+      details,
+    } = body;
 
     if (!title || !message) {
       return NextResponse.json(
@@ -90,9 +99,11 @@ export async function POST(
       title,
       message,
       severity: severity as AlertSeverity | undefined,
-      source,
+      metricType,
+      metricValue,
+      threshold,
       instanceId,
-      metadata,
+      details,
     });
 
     return NextResponse.json(

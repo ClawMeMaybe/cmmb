@@ -57,7 +57,7 @@ export async function POST(
     const instanceTag = await addTagToInstance({
       instanceId: id,
       tagId,
-      assignedBy: session.id,
+      addedById: session.id,
     });
 
     return NextResponse.json(

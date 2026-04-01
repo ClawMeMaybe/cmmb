@@ -45,16 +45,32 @@ enum ChannelStatus {
   CONFIGURING
 }
 
+// Alert severity levels
 enum AlertSeverity {
-  CRITICAL
-  WARNING
   INFO
+  WARNING
+  CRITICAL
 }
 
+// Alert status
 enum AlertStatus {
-  ACTIVE
-  RESOLVED
-  ACKNOWLEDGED
+  ACTIVE // Alert is currently firing
+  ACKNOWLEDGED // Alert has been acknowledged by a user
+  RESOLVED // Alert condition has been resolved
+}
+
+// API key scopes for permission control
+enum ApiKeyScope {
+  READ_INSTANCES
+  WRITE_INSTANCES
+  READ_CHANNELS
+  WRITE_CHANNELS
+  READ_ALERTS
+  WRITE_ALERTS
+  READ_LOGS
+  READ_WORKSPACE
+  WRITE_WORKSPACE
+  ADMIN
 }
 
 model User {
@@ -66,12 +82,31 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instances       Instance[]
-  auditLogs       AuditLog[]
+  instances          Instance[]
+  sessions           Session[]
+  apiKeys            ApiKey[]
+  auditLogs          AuditLog[]
+  workspaceBackups   WorkspaceBackup[]
   acknowledgedAlerts Alert[]
-  assignedTags    InstanceTag[]
+  assignedTags       InstanceTag[]
 
   @@map("users")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  token        String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userAgent    String?
+  ipAddress    String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastAccessed DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@map("sessions")
 }
 
 model Instance {
@@ -87,10 +122,12 @@ model Instance {
   createdById String
   createdBy   User   @relation(fields: [createdById], references: [id])
 
-  channels   Channel[]
-  auditLogs  AuditLog[]
-  alerts     Alert[]
-  tags       InstanceTag[]
+  channels      Channel[]
+  auditLogs     AuditLog[]
+  alerts        Alert[]
+  metricHistory MetricHistory[]
+  agents        Agent[]
+  tags          InstanceTag[]
 
   @@map("instances")
 }
@@ -109,78 +146,281 @@ model Channel {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
-  instanceId   String?
-  instance     Instance?     @relation(fields: [instanceId], references: [id])
+  instanceId String?
+  instance   Instance? @relation(fields: [instanceId], references: [id])
 
-  auditLogs    AuditLog[]
+  auditLogs AuditLog[]
 
   @@map("channels")
 }
 
-model Alert {
-  id          String        @id @default(cuid())
-  title       String
-  message     String
-  severity    AlertSeverity @default(WARNING)
-  status      AlertStatus   @default(ACTIVE)
-  source      String        @default("system")
-  metadata    Json?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  resolvedAt  DateTime?
-
-  instanceId  String?
-  instance    Instance?     @relation(fields: [instanceId], references: [id])
-
-  acknowledgedById  String?
-  acknowledgedBy    User?   @relation(fields: [acknowledgedById], references: [id])
-
-  @@map("alerts")
-}
-
 model AuditLog {
-  id         String    @id @default(cuid())
+  id         String   @id @default(cuid())
   action     String
   entityType String
   entityId   String
   details    Json?
-  createdAt  DateTime  @default(now())
+  createdAt  DateTime @default(now())
 
-  userId     String
-  user       User      @relation(fields: [userId], references: [id])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 
   instanceId String?
   instance   Instance? @relation(fields: [instanceId], references: [id])
 
-  channelId  String?
-  channel    Channel?  @relation(fields: [channelId], references: [id])
+  channelId String?
+  channel   Channel? @relation(fields: [channelId], references: [id])
+
+  workspaceBackupId String?
+  workspaceBackup   WorkspaceBackup? @relation(fields: [workspaceBackupId], references: [id])
 
   @@map("audit_logs")
 }
 
-model Tag {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  color     String   @default("#6B7280")
+model WorkspaceBackup {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  filePath    String // Path to backup archive in storage
+  size        Int // File size in bytes
+  createdAt   DateTime @default(now())
+
+  createdById String
+  createdBy   User   @relation(fields: [createdById], references: [id])
+
+  auditLogs AuditLog[]
+
+  @@map("workspace_backups")
+}
+
+model MetricHistory {
+  id           String   @id @default(cuid())
+  instanceId   String
+  cpu          Float? // CPU usage percentage (0-100)
+  memory       Float? // Memory usage percentage (0-100)
+  requestCount Int? // Total request count at this point
+  status       String // Instance status at measurement time
+  createdAt    DateTime @default(now())
+
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@index([instanceId])
+  @@index([createdAt])
+  @@map("metric_history")
+}
+
+// Alert configuration - defines alert rules/thresholds
+model AlertConfig {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  enabled     Boolean @default(true)
+
+  // Threshold configuration
+  metricType String // e.g., "cpu", "memory", "status_offline", "status_error"
+  operator   String // e.g., ">", ">=", "<", "<=", "==", "!="
+  threshold  Float // Threshold value
+  duration   Int    @default(60) // Duration in seconds before alert fires
+
+  // Notification settings
+  emailEnabled    Boolean @default(true)
+  emailRecipients String? // Comma-separated email addresses
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  alerts Alert[]
+
+  @@map("alert_configs")
+}
+
+// Alert instance - represents a specific alert event
+// Agent status
+enum AgentStatus {
+  ACTIVE
+  INACTIVE
+  TESTING
+  ERROR
+}
+
+// Agent model - represents OpenClaw agent configuration
+model Agent {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  model       String       @default("claude-sonnet-4-5") // AI model to use
+  systemPrompt String?
+  status      AgentStatus  @default(INACTIVE)
+  enabled     Boolean      @default(true)
+  config      Json?        // Additional configuration (temperature, max_tokens, etc.)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  instanceId  String?
+  instance    Instance?    @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  testRuns    AgentTestRun[]
+  metrics     AgentMetric[]
+
+  @@index([instanceId])
+  @@index([status])
+  @@map("agents")
+}
+
+// Agent test run - tracks test executions for the sandbox
+model AgentTestRun {
+  id        String   @id @default(cuid())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  input     String   // Test input message
+  output    String?  // Agent response
+  success   Boolean  @default(false)
+  duration  Int?     // Duration in milliseconds
+  error     String?
+  createdAt DateTime @default(now())
+
+  @@index([agentId])
+  @@index([createdAt])
+  @@map("agent_test_runs")
+}
+
+// Agent metric - performance tracking
+model AgentMetric {
+  id           String   @id @default(cuid())
+  agentId      String
+  agent        Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  // Performance metrics
+  totalRuns    Int      @default(0)
+  successRate  Float    @default(0) // Percentage of successful runs
+  avgDuration  Float    @default(0) // Average response time in ms
+  lastRunAt    DateTime?
+
+  // Time bucket for aggregating metrics (daily)
+  date         DateTime @default(now())
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([agentId])
+  @@index([date])
+  @@unique([agentId, date]) // One metric record per agent per day
+  @@map("agent_metrics")
+}
+
+model Alert {
+  id       String       @id @default(cuid())
+  configId String?
+  config   AlertConfig? @relation(fields: [configId], references: [id])
+
+  instanceId String?
+  instance   Instance? @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  severity AlertSeverity @default(WARNING)
+  status   AlertStatus   @default(ACTIVE)
+
+  title   String
+  message String
+  details Json? // Additional context about the alert
+
+  // Threshold info at time of alert
+  metricType  String
+  metricValue Float?
+  threshold   Float?
+
+  // Acknowledgment info
+  acknowledgedAt     DateTime?
+  acknowledgedById   String?
+  acknowledgedBy     User?     @relation(fields: [acknowledgedById], references: [id])
+  acknowledgmentNote String?
+
+  // Resolution info
+  resolvedAt DateTime?
+
+  // Notification tracking
+  emailSentAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([instanceId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("alerts")
+}
+
+// API key for programmatic access
+model ApiKey {
+  id          String    @id @default(cuid())
+  key         String    @unique
+  name        String
+  description String?
+  scopes      String // JSON array of ApiKeyScope values
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  usages ApiKeyUsage[]
+
+  @@index([key])
+  @@index([userId])
+  @@map("api_keys")
+}
+
+// API key usage log
+model ApiKeyUsage {
+  id         String   @id @default(cuid())
+  endpoint   String
+  method     String
+  statusCode Int
+  ipAddress  String?
+  userAgent  String?
+  duration   Int? // Request duration in milliseconds
+  createdAt  DateTime @default(now())
+
+  apiKeyId String
+  apiKey   ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  @@index([apiKeyId])
+  @@index([createdAt])
+  @@map("api_key_usages")
+}
+
+// Tag model for instance tagging
+model Tag {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  color       String   @default("#6B7280") // Default gray color
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
   instances InstanceTag[]
 
+  @@index([name])
   @@map("tags")
 }
 
+// Instance-Tag association (many-to-many)
 model InstanceTag {
+  id         String   @id @default(cuid())
   instanceId String
   tagId      String
+  addedById   String?
+  addedAt    DateTime @default(now())
 
   instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
   tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+  addedBy  User?    @relation(fields: [addedById], references: [id])
 
-  assignedAt DateTime @default(now())
-  assignedBy String
-  user       User     @relation(fields: [assignedBy], references: [id])
-
-  @@id([instanceId, tagId])
+  @@unique([instanceId, tagId]) // Prevent duplicate tags
+  @@index([instanceId])
+  @@index([tagId])
   @@map("instance_tags")
 }

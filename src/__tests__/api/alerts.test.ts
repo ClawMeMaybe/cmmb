@@ -60,6 +60,7 @@ const mockAdminUser = {
   email: "admin@clawmemaybe.com",
   name: "Admin",
   role: "ADMIN" as const,
+  sessionId: "session-123",
 };
 
 const mockViewerUser = {
@@ -67,21 +68,28 @@ const mockViewerUser = {
   email: "viewer@clawmemaybe.com",
   name: "Viewer",
   role: "VIEWER" as const,
+  sessionId: "session-456",
 };
 
 const mockAlert = {
   id: "alert-123",
+  configId: null,
   title: "Test Alert",
   message: "This is a test alert message",
   severity: "WARNING" as const,
   status: "ACTIVE" as const,
-  source: "system",
-  metadata: null,
+  metricType: "unknown",
+  metricValue: null,
+  threshold: null,
+  details: null,
   createdAt: new Date("2024-01-01T00:00:00Z"),
   updatedAt: new Date("2024-01-01T00:00:00Z"),
   resolvedAt: null,
   instanceId: null,
   acknowledgedById: null,
+  acknowledgedAt: null,
+  acknowledgmentNote: null,
+  emailSentAt: null,
   instance: null,
   acknowledgedBy: null,
 };

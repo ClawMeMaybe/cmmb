@@ -82,13 +82,13 @@ export async function getTagsForInstance(
 export async function addTagToInstance(data: {
   instanceId: string;
   tagId: string;
-  assignedBy: string;
+  addedById?: string;
 }): Promise<InstanceTag & { tag: Tag }> {
   const instanceTag = await prisma.instanceTag.create({
     data: {
       instanceId: data.instanceId,
       tagId: data.tagId,
-      assignedBy: data.assignedBy,
+      addedById: data.addedById ?? null,
     },
     include: { tag: true },
   });
