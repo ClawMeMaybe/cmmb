@@ -56,7 +56,6 @@ export interface GatewayTestResult {
     uptime?: number;
   };
 }
-
 // Skill types
 export interface SkillMetadata {
   name: string;

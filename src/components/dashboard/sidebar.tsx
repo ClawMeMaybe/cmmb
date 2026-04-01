@@ -13,6 +13,7 @@ const navItems = [
   { href: "/instances", label: "Instances" },
   { href: "/channels", label: "Channels" },
   { href: "/devices", label: "Devices" },
+  { href: "/settings/gateway", label: "Settings" },
 ];
 
 export function Sidebar() {
