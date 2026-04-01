@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { getInstanceById } from "@/server/instances";
+import { prisma } from "@/lib/prisma";
 import type { ApiResponse } from "@/types";
 
 export interface InstanceMetrics {
@@ -45,6 +46,11 @@ export async function GET(
       instance.token
     );
 
+    // Save metrics to history (async, don't block response)
+    saveMetricsToHistory(id, metrics).catch((err) => {
+      console.error("Failed to save metrics to history:", err);
+    });
+
     return NextResponse.json({
       data: {
         instanceId: id,
@@ -58,6 +64,24 @@ export async function GET(
       { error: "Internal server error" },
       { status: 500 }
     );
+  }
+}
+
+async function saveMetricsToHistory(
+  instanceId: string,
+  metrics: Omit<InstanceMetrics, "instanceId" | "lastChecked">
+): Promise<void> {
+  // Only save if we have valid metrics
+  if (metrics.cpu !== null || metrics.memory !== null) {
+    await prisma.metricHistory.create({
+      data: {
+        instanceId,
+        cpu: metrics.cpu,
+        memory: metrics.memory,
+        requestCount: metrics.requestCount,
+        status: metrics.status,
+      },
+    });
   }
 }
 

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -45,6 +42,20 @@ enum ChannelStatus {
   CONFIGURING
 }
 
+// Alert severity levels
+enum AlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+// Alert status
+enum AlertStatus {
+  ACTIVE      // Alert is currently firing
+  ACKNOWLEDGED // Alert has been acknowledged by a user
+  RESOLVED    // Alert condition has been resolved
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -55,9 +66,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   instances        Instance[]
-  sessions        Session[]
+  sessions         Session[]
   auditLogs        AuditLog[]
   workspaceBackups WorkspaceBackup[]
+  acknowledgedAlerts Alert[]
 
   @@map("users")
 }
@@ -91,9 +103,12 @@ model Instance {
   createdById String
   createdBy   User   @relation(fields: [createdById], references: [id])
 
-  channels   Channel[]
-  auditLogs  AuditLog[]
+  channels     Channel[]
+  auditLogs    AuditLog[]
+  metricHistory MetricHistory[]
+  alerts       Alert[]
 
+  @@index([createdById])
   @@map("instances")
 }
 
@@ -156,4 +171,87 @@ model WorkspaceBackup {
   auditLogs   AuditLog[]
 
   @@map("workspace_backups")
+}
+
+model MetricHistory {
+  id           String   @id @default(cuid())
+  instanceId   String
+  cpu          Float?   // CPU usage percentage (0-100)
+  memory       Float?   // Memory usage percentage (0-100)
+  requestCount Int?     // Total request count at this point
+  status       String   // Instance status at measurement time
+  createdAt    DateTime @default(now())
+
+  instance     Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@index([instanceId])
+  @@index([createdAt])
+  @@map("metric_history")
+}
+
+// Alert configuration - defines alert rules/thresholds
+model AlertConfig {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  enabled     Boolean  @default(true)
+
+  // Threshold configuration
+  metricType  String   // e.g., "cpu", "memory", "status_offline", "status_error"
+  operator    String   // e.g., ">", ">=", "<", "<=", "==", "!="
+  threshold   Float    // Threshold value
+  duration    Int      @default(60) // Duration in seconds before alert fires
+
+  // Notification settings
+  emailEnabled    Boolean  @default(true)
+  emailRecipients String? // Comma-separated email addresses
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  alerts      Alert[]
+
+  @@map("alert_configs")
+}
+
+// Alert instance - represents a specific alert event
+model Alert {
+  id          String        @id @default(cuid())
+  configId    String?
+  config      AlertConfig?  @relation(fields: [configId], references: [id])
+
+  instanceId  String?
+  instance    Instance?     @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  severity    AlertSeverity @default(WARNING)
+  status      AlertStatus   @default(ACTIVE)
+
+  title       String
+  message     String
+  details     Json? // Additional context about the alert
+
+  // Threshold info at time of alert
+  metricType  String
+  metricValue Float?
+  threshold   Float?
+
+  // Acknowledgment info
+  acknowledgedAt     DateTime?
+  acknowledgedById   String?
+  acknowledgedBy     User?   @relation(fields: [acknowledgedById], references: [id])
+  acknowledgmentNote String?
+
+  // Resolution info
+  resolvedAt DateTime?
+
+  // Notification tracking
+  emailSentAt DateTime?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([instanceId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("alerts")
 }
