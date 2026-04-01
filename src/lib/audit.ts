@@ -9,6 +9,7 @@ export const AuditActions = {
   LOGIN: "LOGIN",
   LOGOUT: "LOGOUT",
   LOGIN_FAILED: "LOGIN_FAILED",
+  PASSWORD_CHANGE: "PASSWORD_CHANGE",
 
   // Instance management
   CREATE_INSTANCE: "CREATE_INSTANCE",
