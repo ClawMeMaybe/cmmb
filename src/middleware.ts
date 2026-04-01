@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Routes that don't require authentication
-const publicRoutes = ["/login", "/api/auth/login"];
+// Note: /api/openclaw/* uses Gateway token auth, not session auth
+const publicRoutes = ["/login", "/api/auth/login", "/api/openclaw"];
 
 // Routes that should be accessible without auth
 const isPublicRoute = (pathname: string): boolean => {

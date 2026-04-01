@@ -1,6 +1,14 @@
 // Re-export Prisma-generated types
-export { Role, InstanceStatus } from "@prisma/client";
-export type { User, Instance, AuditLog } from "@prisma/client";
+export {
+  Role,
+  InstanceStatus,
+  ChannelType,
+  ChannelStatus,
+} from "@prisma/client";
+export type { User, Instance, Channel, AuditLog } from "@prisma/client";
+
+// Device types
+export type { PairedDevice, PairedDevices } from "./device";
 
 // API Response types
 export interface ApiResponse<T> {
@@ -27,10 +35,32 @@ export interface HealthCheckDetail {
 
 export type HealthCheckResponse = HealthCheckDetail;
 
+// Gateway types
+export interface GatewayStatus {
+  status: "ok" | "error" | "offline";
+  version?: string;
+  uptime?: number;
+  gatewayUrl?: string;
+}
+
+export interface GatewayConfig {
+  gatewayUrl: string;
+  hasToken: boolean;
+}
+
+export interface GatewayTestResult {
+  success: boolean;
+  message: string;
+  details?: {
+    version?: string;
+    uptime?: number;
+  };
+}
+
 // Skill types
 export interface SkillMetadata {
   name: string;
-  description: string;
+  description?: string;
   metadata?: Record<string, unknown>;
 }
 

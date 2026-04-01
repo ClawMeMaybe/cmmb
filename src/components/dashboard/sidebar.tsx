@@ -12,6 +12,9 @@ const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
   { href: "/skills", label: "Skills" },
+  { href: "/channels", label: "Channels" },
+  { href: "/devices", label: "Devices" },
+  { href: "/settings/gateway", label: "Settings" },
 ];
 
 export function Sidebar() {
