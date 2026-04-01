@@ -54,7 +54,13 @@ export interface CreateAuditLogOptions {
  */
 export async function createAuditLog(
   options: CreateAuditLogOptions
-): Promise<AuditLog> {
+): Promise<AuditLog | null> {
+  // Skip audit log if userId is invalid (e.g., "unknown" for failed login attempts)
+  if (options.userId === "unknown" || !options.userId) {
+    console.log("Skipping audit log: invalid userId", options.action);
+    return null;
+  }
+
   return prisma.auditLog.create({
     data: {
       action: options.action,
