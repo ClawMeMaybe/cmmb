@@ -83,7 +83,9 @@ describe("Instances API", () => {
     it("should return 401 when not authenticated", async () => {
       vi.mocked(getSession).mockResolvedValueOnce(null);
 
-      const response = await GET();
+      const response = await GET(
+        createRequest("http://localhost/api/instances")
+      );
       const data = await response.json();
 
       expect(response.status).toBe(401);
@@ -94,15 +96,19 @@ describe("Instances API", () => {
       vi.mocked(getSession).mockResolvedValueOnce(mockUser);
       vi.mocked(prisma.instance.findMany).mockResolvedValueOnce([mockInstance]);
 
-      const response = await GET();
+      const response = await GET(
+        createRequest("http://localhost/api/instances")
+      );
       const data = await response.json();
 
       expect(response.status).toBe(200);
       expect(data.data).toHaveLength(1);
       expect(data.data[0].name).toBe("Test Instance");
-      expect(prisma.instance.findMany).toHaveBeenCalledWith({
-        orderBy: { createdAt: "desc" },
-      });
+      expect(prisma.instance.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          orderBy: { createdAt: "desc" },
+        })
+      );
     });
   });
 

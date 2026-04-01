@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { getInstances, createInstance } from "@/server/instances";
+import { getInstancesWithTags, createInstance } from "@/server/instances";
 import { InstanceStatus } from "@prisma/client";
 import type { ApiResponse, Instance } from "@/types";
+import type { InstanceWithTags } from "@/server/instances";
 
+<<<<<<< HEAD
 /**
  * @openapi
  * /instances:
@@ -81,6 +83,11 @@ import type { ApiResponse, Instance } from "@/types";
  */
 
 export async function GET(): Promise<NextResponse<ApiResponse<Instance[]>>> {
+=======
+export async function GET(
+  request: NextRequest
+): Promise<NextResponse<ApiResponse<InstanceWithTags[]>>> {
+>>>>>>> 6edde1a (feat: implement instance tags and filtering system)
   try {
     const session = await getSession();
 
@@ -88,7 +95,11 @@ export async function GET(): Promise<NextResponse<ApiResponse<Instance[]>>> {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const instances = await getInstances();
+    const { searchParams } = new URL(request.url);
+    const tagsParam = searchParams.get("tags");
+    const tagIds = tagsParam ? tagsParam.split(",").filter(Boolean) : undefined;
+
+    const instances = await getInstancesWithTags({ tagIds });
 
     return NextResponse.json({ data: instances });
   } catch (error) {
@@ -111,7 +122,7 @@ export async function POST(
     }
 
     const body = await request.json();
-    const { name, description, gatewayUrl, token } = body;
+    const { name, description, gatewayUrl, token, tagIds } = body;
 
     if (!name || !gatewayUrl || !token) {
       return NextResponse.json(
@@ -127,6 +138,7 @@ export async function POST(
       gatewayUrl,
       token,
       createdById: session.id,
+      tagIds,
     });
 
     return NextResponse.json(

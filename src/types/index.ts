@@ -6,52 +6,19 @@ export {
   ChannelStatus,
   AlertSeverity,
   AlertStatus,
-  AgentStatus,
 } from "@prisma/client";
 export type {
   User,
   Instance,
   Channel,
   AuditLog,
-  Session,
-  AlertConfig,
   Alert,
-  ApiKey,
-  ApiKeyUsage,
-  Agent,
-  AgentTestRun,
-  AgentMetric,
+  Tag,
+  InstanceTag,
 } from "@prisma/client";
 
 // Device types
 export type { PairedDevice, PairedDevices } from "./device";
-
-// Log types
-export type {
-  LogLevel,
-  LogSource,
-  LogEntry,
-  LogEntryResponse,
-  LogsQueryParams,
-  LogsPagination,
-  LogsApiResponse,
-  LogStreamMessageType,
-  LogStreamClientMessage,
-  LogStreamServerMessage,
-  LogFilterState,
-  LogExportFormat,
-  LogExportOptions,
-  LogStreamConnectionState,
-  UseLogStreamReturn,
-} from "./logs";
-export {
-  LOG_LEVEL_COLORS,
-  LOG_SOURCE_LABELS,
-  DEFAULT_LOG_LEVELS,
-  MAX_STREAM_LOGS,
-  DEFAULT_PAGE_SIZE,
-  MAX_PAGE_SIZE,
-} from "./logs";
 
 // API Response types
 export interface ApiResponse<T> {
@@ -112,44 +79,3 @@ export interface Skill extends SkillMetadata {
   enabled: boolean;
   content?: string;
 }
-
-// Workspace types
-export type {
-  WorkspaceFile,
-  WorkspaceFileContent,
-  MemoryType,
-  MemoryEntry,
-  MemoryEntryInput,
-  MemoryEntryUpdate,
-  RuleConfig,
-  RulesConfig,
-  WorkspaceBackupData,
-  BackupCreateInput,
-  WorkspaceDirectory,
-  WorkspaceStats,
-  FrontmatterContent,
-} from "./workspace";
-
-// API key types
-export type {
-  ApiKeyScope,
-  ApiKeyCreateInput,
-  ApiKeyUpdateInput,
-  ApiKeyWithStats,
-  ApiKeyUsageLog,
-  ApiKeyUsageFilterOptions,
-  ApiKeyFilterOptions,
-  ApiKeyCreateResponse,
-} from "./api-keys";
-export { API_KEY_SCOPE_DESCRIPTIONS, API_KEY_SCOPE_GROUPS } from "./api-keys";
-
-// Agent types
-export type {
-  AgentConfig,
-  AgentInput,
-  AgentTestInput,
-  AgentTestResult,
-  AgentPerformanceSummary,
-  ModelId,
-} from "./agent";
-export { AVAILABLE_MODELS, AGENT_STATUS_COLORS } from "./agent";
