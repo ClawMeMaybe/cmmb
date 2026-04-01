@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.5 (2026-04-01) - Sprint 3 Start
+
+### Status Sync
+- Updated `state.json` with accurate issue/PR status
+- Updated `PLAN.md` with completed phases
+- Updated `HEARTBEAT.md` for Sprint 3
+
+### Pending PRs (6 open)
+- #79: API Rate Limiting (closes #48)
+- #78: API Rate Limiting v2
+- #77: Instance Creation Form (closes #33)
+- #75: Gateway Connection Management
+- #74: Skills Management Interface (closes #61)
+- #73: Channel Configuration UI (closes #60)
+
+### Sprint 3 Goals
+- Merge pending PRs
+- Production deployment automation (#55)
+- Monitoring and logging setup (#56)
+
+<!-- source: sprint-3-start -->
+
+---
+
 ## v1.0.1 (2026-03-31) - Login Flow Fix
 
 ### Bug Fixes
