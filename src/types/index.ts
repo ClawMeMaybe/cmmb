@@ -4,6 +4,8 @@ export {
   InstanceStatus,
   ChannelType,
   ChannelStatus,
+  AlertSeverity,
+  AlertStatus,
 } from "@prisma/client";
 export type {
   User,
@@ -11,6 +13,10 @@ export type {
   Channel,
   AuditLog,
   Session,
+  AlertConfig,
+  Alert,
+  ApiKey,
+  ApiKeyUsage,
 } from "@prisma/client";
 
 // Device types
@@ -119,3 +125,16 @@ export type {
   WorkspaceStats,
   FrontmatterContent,
 } from "./workspace";
+
+// API key types
+export type {
+  ApiKeyScope,
+  ApiKeyCreateInput,
+  ApiKeyUpdateInput,
+  ApiKeyWithStats,
+  ApiKeyUsageLog,
+  ApiKeyUsageFilterOptions,
+  ApiKeyFilterOptions,
+  ApiKeyCreateResponse,
+} from "./api-keys";
+export { API_KEY_SCOPE_DESCRIPTIONS, API_KEY_SCOPE_GROUPS } from "./api-keys";
