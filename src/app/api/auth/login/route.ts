@@ -4,6 +4,54 @@ import { verifyPassword, createSession } from "@/lib/auth";
 import { createAuditLog, AuditActions, EntityTypes } from "@/lib/audit";
 import type { ApiResponse } from "@/types";
 
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     summary: Admin login
+ *     description: Authenticate an admin user and create a session
+ *     tags:
+ *       - Authentication
+ *     security: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginRequest'
+ *     responses:
+ *       '200':
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/LoginResponse'
+ *                 message:
+ *                   type: string
+ *                   example: "Login successful"
+ *       '400':
+ *         description: Missing required fields
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '401':
+ *         description: Invalid credentials
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
 // Define a safe user type for API responses (without password)
 type SafeUser = {
   id: string;

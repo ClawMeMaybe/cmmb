@@ -32,6 +32,77 @@ const actionStatusMap: Record<
 };
 
 /**
+ * @openapi
+ * /instances/{id}/action:
+ *   patch:
+ *     summary: Execute instance action
+ *     description: Execute start, stop, or restart action on an instance. Requires admin role.
+ *     tags:
+ *       - Instances
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Instance ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/InstanceActionRequest'
+ *     responses:
+ *       '200':
+ *         description: Action executed successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Instance'
+ *                 message:
+ *                   type: string
+ *       '400':
+ *         description: Invalid action
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '403':
+ *         description: Forbidden - Admin role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Instance not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '409':
+ *         description: Instance is in a transitional state
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error or action failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
  * PATCH /api/instances/[id]/action
  * Execute start/stop/restart action on an instance
  */

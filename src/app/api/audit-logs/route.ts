@@ -34,6 +34,129 @@ interface ActionsResponse {
 }
 
 /**
+ * @openapi
+ * /audit-logs:
+ *   get:
+ *     summary: Get audit logs
+ *     description: Retrieve operation audit logs with pagination and filtering. Requires admin role.
+ *     tags:
+ *       - Audit Logs
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: Page number
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - name: pageSize
+ *         in: query
+ *         description: Items per page
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *           maximum: 100
+ *       - name: userId
+ *         in: query
+ *         description: Filter by user ID
+ *         schema:
+ *           type: string
+ *       - name: action
+ *         in: query
+ *         description: Filter by action type
+ *         schema:
+ *           type: string
+ *       - name: entityType
+ *         in: query
+ *         description: Filter by entity type
+ *         schema:
+ *           type: string
+ *       - name: entityId
+ *         in: query
+ *         description: Filter by entity ID
+ *         schema:
+ *           type: string
+ *       - name: instanceId
+ *         in: query
+ *         description: Filter by instance ID
+ *         schema:
+ *           type: string
+ *       - name: startDate
+ *         in: query
+ *         description: Filter from date (ISO string)
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - name: endDate
+ *         in: query
+ *         description: Filter to date (ISO string)
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - name: actions
+ *         in: query
+ *         description: Return list of action types instead of logs
+ *         schema:
+ *           type: boolean
+ *     responses:
+ *       '200':
+ *         description: Audit logs or action types
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - type: object
+ *                   properties:
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         logs:
+ *                           type: array
+ *                           items:
+ *                             $ref: '#/components/schemas/AuditLog'
+ *                         pagination:
+ *                           type: object
+ *                           properties:
+ *                             page:
+ *                               type: integer
+ *                             pageSize:
+ *                               type: integer
+ *                             total:
+ *                               type: integer
+ *                             totalPages:
+ *                               type: integer
+ *                 - type: object
+ *                   properties:
+ *                     actions:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *       '400':
+ *         description: Invalid parameters
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '403':
+ *         description: Forbidden - Admin role required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
+/**
  * GET /api/audit-logs
  * List audit logs with pagination and filtering
  * Query params:

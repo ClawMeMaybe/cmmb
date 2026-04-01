@@ -3,6 +3,30 @@ import { prisma } from "@/lib/prisma";
 import type { HealthCheckResponse, HealthCheckDetail } from "@/types";
 
 /**
+ * @openapi
+ * /health:
+ *   get:
+ *     summary: Health check
+ *     description: Check system health including database connectivity
+ *     tags:
+ *       - System
+ *     security: []
+ *     responses:
+ *       '200':
+ *         description: System is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheckResponse'
+ *       '503':
+ *         description: System is unhealthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheckResponse'
+ */
+
+/**
  * Health check endpoint for deployment validation
  * Checks database connectivity and optionally gateway connectivity
  */

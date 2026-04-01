@@ -20,6 +20,69 @@ export interface MetricsHistoryResponse {
 
 type TimeRange = "24h" | "7d" | "30d";
 
+/**
+ * @openapi
+ * /dashboard/metrics:
+ *   get:
+ *     summary: Get dashboard metrics history
+ *     description: Retrieve aggregated metrics history for dashboard charts
+ *     tags:
+ *       - Dashboard
+ *     parameters:
+ *       - name: range
+ *         in: query
+ *         description: Time range for metrics
+ *         schema:
+ *           type: string
+ *           enum: ["24h", "7d", "30d"]
+ *           default: "24h"
+ *     responses:
+ *       '200':
+ *         description: Metrics history data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     metrics:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           timestamp:
+ *                             type: string
+ *                             format: date-time
+ *                           cpu:
+ *                             type: number
+ *                           memory:
+ *                             type: number
+ *                           requestCount:
+ *                             type: integer
+ *                     timeRange:
+ *                       type: string
+ *                     totalRequests:
+ *                       type: integer
+ *                     avgCpu:
+ *                       type: number
+ *                     avgMemory:
+ *                       type: number
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
 function getTimeRangeFilter(timeRange: TimeRange): Date {
   const now = new Date();
   switch (timeRange) {
