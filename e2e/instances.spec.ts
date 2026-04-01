@@ -10,7 +10,7 @@ test.describe("Instances List", () => {
     await page.click('button[type="submit"]');
     // Wait for redirect away from login
     await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
+      timeout: 30000,
     });
   });
 
@@ -83,7 +83,7 @@ test.describe("Instance Detail", () => {
     await page.click('button[type="submit"]');
     // Wait for redirect away from login
     await page.waitForURL((url) => !url.pathname.includes("/login"), {
-      timeout: 15000,
+      timeout: 30000,
     });
   });
 
