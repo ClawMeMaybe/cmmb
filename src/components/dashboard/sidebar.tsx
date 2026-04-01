@@ -12,10 +12,10 @@ const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/instances", label: "Instances" },
   { href: "/instances/new", label: "Add Instance" },
-  { href: "/devices", label: "Devices" },
-  { href: "/users", label: "Users" },
   { href: "/skills", label: "Skills" },
   { href: "/channels", label: "Channels" },
+  { href: "/devices", label: "Devices" },
+  { href: "/users", label: "Users" },
   { href: "/settings/gateway", label: "Settings" },
 ];
 

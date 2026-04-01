@@ -28,9 +28,11 @@ import {
   Clock,
   Activity,
   ArrowLeft,
-  Trash2,
   ExternalLink,
+  Edit,
 } from "lucide-react";
+import Link from "next/link";
+import { DeleteDialog } from "@/components/instances/delete-dialog";
 import type { Instance } from "@/types";
 import type { InstanceStatus } from "@prisma/client";
 
@@ -216,6 +218,12 @@ export default function InstanceDetailPage() {
               className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
             />
           </Button>
+          <Link href={`/instances/${instance.id}/edit`}>
+            <Button variant="outline">
+              <Edit className="mr-2 h-4 w-4" />
+              Edit
+            </Button>
+          </Link>
           {instance.gatewayUrl && (
             <Button
               variant="outline"
@@ -225,10 +233,7 @@ export default function InstanceDetailPage() {
               Open Gateway
             </Button>
           )}
-          <Button variant="destructive">
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </Button>
+          <DeleteDialog instanceId={instance.id} instanceName={instance.name} />
         </div>
       </div>
 
