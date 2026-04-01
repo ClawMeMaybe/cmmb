@@ -1,114 +1,87 @@
 {
   "project": "ClawMeMaybe",
-  "phase": "Phase 1 - Development",
+  "phase": "Phase 2 - Feature Development",
   "currentSprint": {
-    "number": 2,
-    "startDate": "2026-03-31",
-    "goals": [
-      "#22",
-      "#11",
-      "#14"
-    ]
+    "number": 3,
+    "startDate": "2026-04-01",
+    "goals": ["#48", "#60", "#61"]
   },
-  "lastUpdated": "2026-04-01T14:41:25+08:00",
+  "lastUpdated": "2026-04-01T08:05:00+08:00",
   "status": "in-progress",
   "mode": "auto",
+
   "issues": {
-    "backlog": [
-      23,
-      24
-    ],
-    "ready": [
-      23,
-      24
-    ],
-    "inProgress": [
-      22,
-      14
-    ],
-    "review": [
-      11
-    ],
-    "done": [
-      9,
-      10,
-      12,
-      13,
-      16
-    ]
+    "backlog": [53, 54, 55, 56, 57, 63, 64, 65, 66, 68, 70, 71, 72],
+    "ready": [55, 56, 57, 63, 64, 65],
+    "inProgress": [48, 60, 61],
+    "review": [48, 60, 61],
+    "done": [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 22, 23, 24, 32, 35, 59, 62, 67]
   },
+
   "issueDetails": {
-    "9": {
-      "title": "Initialize Next.js Project Boilerplate",
-      "status": "done"
-    },
-    "10": {
-      "title": "Research OpenClaw Gateway + Token Management",
-      "status": "done"
-    },
-    "11": {
-      "title": "Monitoring Dashboard",
-      "status": "review",
-      "pr": 25
-    },
-    "12": {
-      "title": "Instance CRUD Management",
-      "status": "done"
-    },
-    "13": {
-      "title": "Admin Login Page and Authentication",
-      "status": "done"
-    },
-    "14": {
-      "title": "Audit Log System",
-      "status": "in-progress",
-      "agent": "subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7"
-    },
-    "16": {
-      "title": "Replace Chinese text with English",
-      "status": "done"
-    },
-    "22": {
-      "title": "Instance Start/Stop Actions",
-      "status": "in-progress",
-      "agent": "subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9"
-    },
-    "23": {
-      "title": "Deployment Validation and Production Setup",
-      "status": "ready"
-    },
-    "24": {
-      "title": "E2E Testing with Playwright",
-      "status": "ready"
-    }
+    "4": { "title": "Configure GitHub Actions CI/CD", "status": "done" },
+    "5": { "title": "Configure Docker Compose + Nginx", "status": "done" },
+    "6": { "title": "Research OpenClaw Gateway + Token", "status": "done" },
+    "7": { "title": "Implement Admin Login Page", "status": "done" },
+    "8": { "title": "Implement Instance CRUD + Monitoring", "status": "done" },
+    "9": { "title": "Initialize Next.js Project Boilerplate", "status": "done" },
+    "10": { "title": "Research OpenClaw Gateway + Token", "status": "done" },
+    "11": { "title": "Monitoring Dashboard", "status": "done" },
+    "12": { "title": "Instance CRUD Management", "status": "done" },
+    "13": { "title": "Admin Login Page and Authentication", "status": "done" },
+    "14": { "title": "Audit Log System", "status": "done" },
+    "16": { "title": "Replace Chinese text with English", "status": "done" },
+    "22": { "title": "Instance Start/Stop Actions", "status": "done" },
+    "23": { "title": "Deployment Validation and Production Setup", "status": "done" },
+    "24": { "title": "E2E Testing with Playwright", "status": "done" },
+    "32": { "title": "Login page not working on HTTP localhost", "status": "done" },
+    "35": { "title": "Instance deletion with confirmation", "status": "done" },
+    "48": { "title": "API Rate Limiting", "status": "review", "pr": 79 },
+    "53": { "title": "Task assignment system (Phase 2)", "status": "backlog" },
+    "54": { "title": "Team management (Phase 2)", "status": "backlog" },
+    "55": { "title": "Production deployment automation", "status": "ready" },
+    "56": { "title": "Monitoring and logging setup", "status": "ready" },
+    "57": { "title": "Bulk operations for instances", "status": "ready" },
+    "59": { "title": "Paired devices management", "status": "done" },
+    "60": { "title": "Channel configuration UI", "status": "review", "pr": 73 },
+    "61": { "title": "Skills management interface", "status": "review", "pr": 74 },
+    "62": { "title": "Gateway connection management", "status": "done" },
+    "63": { "title": "Conversation history viewer", "status": "backlog" },
+    "64": { "title": "Agent configuration dashboard", "status": "backlog" },
+    "65": { "title": "Plugin management", "status": "backlog" },
+    "66": { "title": "Real-time logs viewer", "status": "backlog" },
+    "67": { "title": "OpenClaw API proxy", "status": "done" },
+    "68": { "title": "OpenClaw workspace sync", "status": "backlog" },
+    "70": { "title": "Conversation history from OpenClaw", "status": "backlog" },
+    "71": { "title": "Agent testing sandbox", "status": "backlog" },
+    "72": { "title": "Real-time log streaming", "status": "backlog" }
   },
+
+  "pullRequests": {
+    "open": [
+      { "number": 79, "title": "API rate limiting", "issue": 48, "status": "pending_review" },
+      { "number": 78, "title": "API rate limiting v2", "status": "pending_review" },
+      { "number": 77, "title": "Instance creation form", "issue": 33, "status": "pending_review" },
+      { "number": 75, "title": "Gateway connection management", "issue": 62, "status": "pending_review" },
+      { "number": 74, "title": "Skills management interface", "issue": 61, "status": "pending_review" },
+      { "number": 73, "title": "Channel configuration UI", "issue": 60, "status": "pending_review" }
+    ],
+    "merged": [25, 26, 28, 29, 30, 31, 58, 69, 76]
+  },
+
   "subagents": {
-    "active": [
-      {
-        "sessionKey": "agent:main:subagent:39ee69f9-6793-42db-a74d-9f23d2be0ad9",
-        "issue": 22
-      },
-      {
-        "sessionKey": "agent:main:subagent:d92c0933-b651-4861-a6f5-691e7bf39ab7",
-        "issue": 14
-      }
-    ]
+    "active": []
   },
+
   "capacity": {
     "max": 3,
-    "used": 2,
-    "available": 1
+    "used": 0,
+    "available": 3
   },
+
   "metrics": {
-    "sprint1": {
-      "issuesCompleted": 5,
-      "prsMerged": 5
-    },
-    "sprint2": {
-      "issuesCompleted": 0,
-      "issuesInReview": 1,
-      "issuesInProgress": 2
-    }
-  },
-  "lastCompletedIssue": 66
+    "sprint1": { "issuesCompleted": 5, "prsMerged": 5 },
+    "sprint2": { "issuesCompleted": 10, "prsMerged": 9 },
+    "sprint3": { "issuesCompleted": 0, "issuesInReview": 3 }
+  }
 }
