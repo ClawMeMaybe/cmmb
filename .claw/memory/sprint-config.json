@@ -1,0 +1,16 @@
+{
+  "sprint": {
+    "durationMinutes": 5,
+    "capacityPerSprint": 2,
+    "maxConcurrent": 3,
+    "bufferBetweenSprints": 0
+  },
+  "models": {
+    "developer": "bailian/qwen3-coder-next",
+    "qa": "bailian/qwen3-max-2026-01-23",
+    "techlead": "bailian/qwen3.5-plus",
+    "pm": "bailian/qwen3.5-plus"
+  },
+  "testMode": true,
+  "testModeNote": "5-minute sprints for rapid iteration testing. Reset to 120min for production."
+}

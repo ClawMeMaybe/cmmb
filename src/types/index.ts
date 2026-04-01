@@ -4,6 +4,8 @@ export {
   InstanceStatus,
   ChannelType,
   ChannelStatus,
+  AlertSeverity,
+  AlertStatus,
 } from "@prisma/client";
 export type {
   User,
@@ -11,6 +13,8 @@ export type {
   Channel,
   AuditLog,
   Session,
+  AlertConfig,
+  Alert,
 } from "@prisma/client";
 
 // Device types
@@ -119,3 +123,16 @@ export type {
   WorkspaceStats,
   FrontmatterContent,
 } from "./workspace";
+
+// Alert types
+export type {
+  AlertConfigInput,
+  AlertConfigUpdateInput,
+  AlertCreateInput,
+  AlertAcknowledgeInput,
+  AlertMetricType,
+  AlertOperator,
+  AlertFilterOptions,
+  AlertWithRelations,
+  AlertSummary,
+} from "./alerts";
