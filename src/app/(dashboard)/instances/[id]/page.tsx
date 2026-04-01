@@ -33,6 +33,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { DeleteDialog } from "@/components/instances/delete-dialog";
+import { InstanceTags } from "@/components/instances/instance-tags";
+import { InstanceAlerts } from "@/components/alerts/instance-alerts";
 import type { Instance } from "@/types";
 import type { InstanceStatus } from "@prisma/client";
 
@@ -236,6 +238,9 @@ export default function InstanceDetailPage() {
           <DeleteDialog instanceId={instance.id} instanceName={instance.name} />
         </div>
       </div>
+
+      {/* Instance Alerts */}
+      <InstanceAlerts instanceId={instance.id} />
 
       {/* Metrics Overview Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -512,6 +517,11 @@ export default function InstanceDetailPage() {
             <span className="text-sm">
               {new Date(instance.updatedAt).toLocaleString()}
             </span>
+          </div>
+          <Separator />
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium">Tags</span>
+            <InstanceTags instanceId={instance.id} />
           </div>
         </CardContent>
       </Card>

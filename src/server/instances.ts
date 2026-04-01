@@ -1,10 +1,53 @@
 import { prisma } from "@/lib/prisma";
-import type { Instance, AuditLog } from "@prisma/client";
+import type { Instance, AuditLog, Tag, InstanceTag } from "@prisma/client";
 import { InstanceStatus } from "@prisma/client";
 
-export async function getInstances(): Promise<Instance[]> {
+export type InstanceWithTags = Instance & {
+  tags: (InstanceTag & { tag: Tag })[];
+};
+
+export async function getInstances(options?: {
+  tagIds?: string[];
+}): Promise<Instance[]> {
+  const where = options?.tagIds
+    ? {
+        tags: {
+          some: {
+            tagId: { in: options.tagIds },
+          },
+        },
+      }
+    : undefined;
+
   const instances = await prisma.instance.findMany({
+    where,
     orderBy: { createdAt: "desc" },
+  });
+  return instances;
+}
+
+export async function getInstancesWithTags(options?: {
+  tagIds?: string[];
+}): Promise<InstanceWithTags[]> {
+  const where = options?.tagIds
+    ? {
+        tags: {
+          some: {
+            tagId: { in: options.tagIds },
+          },
+        },
+      }
+    : undefined;
+
+  const instances = await prisma.instance.findMany({
+    where,
+    orderBy: { createdAt: "desc" },
+    include: {
+      tags: {
+        include: { tag: true },
+        orderBy: { tag: { name: "asc" } },
+      },
+    },
   });
   return instances;
 }
@@ -23,6 +66,7 @@ export async function createInstance(data: {
   gatewayUrl: string;
   token: string;
   createdById: string;
+  tagIds?: string[];
 }): Promise<Instance> {
   const instance = await prisma.instance.create({
     data: {
@@ -32,6 +76,19 @@ export async function createInstance(data: {
       gatewayUrl: data.gatewayUrl,
       token: data.token,
       createdById: data.createdById,
+      tags: data.tagIds
+        ? {
+            create: data.tagIds.map((tagId) => ({
+              tagId,
+              assignedBy: data.createdById,
+            })),
+          }
+        : undefined,
+    },
+    include: {
+      tags: {
+        include: { tag: true },
+      },
     },
   });
 

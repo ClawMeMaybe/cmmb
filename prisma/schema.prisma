@@ -45,6 +45,18 @@ enum ChannelStatus {
   CONFIGURING
 }
 
+enum AlertSeverity {
+  CRITICAL
+  WARNING
+  INFO
+}
+
+enum AlertStatus {
+  ACTIVE
+  RESOLVED
+  ACKNOWLEDGED
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -54,28 +66,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  instances        Instance[]
-  sessions        Session[]
-  auditLogs        AuditLog[]
-  workspaceBackups WorkspaceBackup[]
+  instances       Instance[]
+  auditLogs       AuditLog[]
+  acknowledgedAlerts Alert[]
+  assignedTags    InstanceTag[]
 
   @@map("users")
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  token        String   @unique
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userAgent    String?
-  ipAddress    String?
-  expiresAt    DateTime
-  createdAt    DateTime @default(now())
-  lastAccessed DateTime @default(now())
-
-  @@index([userId])
-  @@index([token])
-  @@map("sessions")
 }
 
 model Instance {
@@ -93,6 +89,8 @@ model Instance {
 
   channels   Channel[]
   auditLogs  AuditLog[]
+  alerts     Alert[]
+  tags       InstanceTag[]
 
   @@map("instances")
 }
@@ -119,6 +117,27 @@ model Channel {
   @@map("channels")
 }
 
+model Alert {
+  id          String        @id @default(cuid())
+  title       String
+  message     String
+  severity    AlertSeverity @default(WARNING)
+  status      AlertStatus   @default(ACTIVE)
+  source      String        @default("system")
+  metadata    Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  resolvedAt  DateTime?
+
+  instanceId  String?
+  instance    Instance?     @relation(fields: [instanceId], references: [id])
+
+  acknowledgedById  String?
+  acknowledgedBy    User?   @relation(fields: [acknowledgedById], references: [id])
+
+  @@map("alerts")
+}
+
 model AuditLog {
   id         String    @id @default(cuid())
   action     String
@@ -136,24 +155,32 @@ model AuditLog {
   channelId  String?
   channel    Channel?  @relation(fields: [channelId], references: [id])
 
-  workspaceBackupId String?
-  workspaceBackup   WorkspaceBackup? @relation(fields: [workspaceBackupId], references: [id])
-
   @@map("audit_logs")
 }
 
-model WorkspaceBackup {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  filePath    String   // Path to backup archive in storage
-  size        Int      // File size in bytes
-  createdAt   DateTime @default(now())
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  color     String   @default("#6B7280")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id])
+  instances InstanceTag[]
 
-  auditLogs   AuditLog[]
+  @@map("tags")
+}
 
-  @@map("workspace_backups")
+model InstanceTag {
+  instanceId String
+  tagId      String
+
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  tag      Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  assignedAt DateTime @default(now())
+  assignedBy String
+  user       User     @relation(fields: [assignedBy], references: [id])
+
+  @@id([instanceId, tagId])
+  @@map("instance_tags")
 }

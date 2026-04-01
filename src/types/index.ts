@@ -4,44 +4,21 @@ export {
   InstanceStatus,
   ChannelType,
   ChannelStatus,
+  AlertSeverity,
+  AlertStatus,
 } from "@prisma/client";
 export type {
   User,
   Instance,
   Channel,
   AuditLog,
-  Session,
+  Alert,
+  Tag,
+  InstanceTag,
 } from "@prisma/client";
 
 // Device types
 export type { PairedDevice, PairedDevices } from "./device";
-
-// Log types
-export type {
-  LogLevel,
-  LogSource,
-  LogEntry,
-  LogEntryResponse,
-  LogsQueryParams,
-  LogsPagination,
-  LogsApiResponse,
-  LogStreamMessageType,
-  LogStreamClientMessage,
-  LogStreamServerMessage,
-  LogFilterState,
-  LogExportFormat,
-  LogExportOptions,
-  LogStreamConnectionState,
-  UseLogStreamReturn,
-} from "./logs";
-export {
-  LOG_LEVEL_COLORS,
-  LOG_SOURCE_LABELS,
-  DEFAULT_LOG_LEVELS,
-  MAX_STREAM_LOGS,
-  DEFAULT_PAGE_SIZE,
-  MAX_PAGE_SIZE,
-} from "./logs";
 
 // API Response types
 export interface ApiResponse<T> {
@@ -102,20 +79,3 @@ export interface Skill extends SkillMetadata {
   enabled: boolean;
   content?: string;
 }
-
-// Workspace types
-export type {
-  WorkspaceFile,
-  WorkspaceFileContent,
-  MemoryType,
-  MemoryEntry,
-  MemoryEntryInput,
-  MemoryEntryUpdate,
-  RuleConfig,
-  RulesConfig,
-  WorkspaceBackupData,
-  BackupCreateInput,
-  WorkspaceDirectory,
-  WorkspaceStats,
-  FrontmatterContent,
-} from "./workspace";
