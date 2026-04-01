@@ -15,6 +15,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { GatewayStatus } from "@/components/dashboard/gateway-status";
+import { MetricsCharts } from "@/components/dashboard/charts/metrics-charts";
 
 interface DashboardStats {
   totalInstances: number;
@@ -180,6 +181,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Historical Metrics Charts */}
+      <MetricsCharts />
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-3">
