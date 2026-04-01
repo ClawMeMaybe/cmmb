@@ -12,6 +12,63 @@ type SessionInfo = {
   isCurrent: boolean;
 };
 
+/**
+ * @openapi
+ * /auth/sessions:
+ *   get:
+ *     summary: Get user sessions
+ *     description: Retrieve all active sessions for the current user
+ *     tags:
+ *       - Authentication
+ *     responses:
+ *       '200':
+ *         description: List of user sessions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     sessions:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: string
+ *                           userAgent:
+ *                             type: string
+ *                             nullable: true
+ *                           ipAddress:
+ *                             type: string
+ *                             nullable: true
+ *                           createdAt:
+ *                             type: string
+ *                             format: date-time
+ *                           lastAccessed:
+ *                             type: string
+ *                             format: date-time
+ *                           expiresAt:
+ *                             type: string
+ *                             format: date-time
+ *                           isCurrent:
+ *                             type: boolean
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
 export async function GET(): Promise<
   NextResponse<ApiResponse<{ sessions: SessionInfo[] }>>
 > {

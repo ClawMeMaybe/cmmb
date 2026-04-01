@@ -11,6 +11,135 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * @openapi
+ * /instances/{id}:
+ *   get:
+ *     summary: Get instance details
+ *     description: Retrieve details of a specific OpenClaw instance
+ *     tags:
+ *       - Instances
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Instance ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Instance details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Instance'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Instance not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *   put:
+ *     summary: Update an instance
+ *     description: Update configuration of an existing OpenClaw instance
+ *     tags:
+ *       - Instances
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Instance ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateInstanceRequest'
+ *     responses:
+ *       '200':
+ *         description: Instance updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/Instance'
+ *                 message:
+ *                   type: string
+ *                   example: "Instance updated successfully"
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Instance not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *   delete:
+ *     summary: Delete an instance
+ *     description: Delete an OpenClaw instance configuration
+ *     tags:
+ *       - Instances
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Instance ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Instance deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Instance deleted successfully"
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
 export async function GET(
   _request: NextRequest,
   { params }: RouteParams

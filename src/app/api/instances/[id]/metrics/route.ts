@@ -19,6 +19,51 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
+/**
+ * @openapi
+ * /instances/{id}/metrics:
+ *   get:
+ *     summary: Get instance metrics
+ *     description: Retrieve real-time metrics for a specific OpenClaw instance
+ *     tags:
+ *       - Instances
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Instance ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Instance metrics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   $ref: '#/components/schemas/InstanceMetrics'
+ *       '401':
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '404':
+ *         description: Instance not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       '500':
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
+
 export async function GET(
   _request: NextRequest,
   { params }: RouteParams
