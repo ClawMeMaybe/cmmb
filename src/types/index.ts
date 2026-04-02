@@ -7,6 +7,8 @@ export {
   AlertSeverity,
   AlertStatus,
   AgentStatus,
+  ResourceRequestStatus,
+  ResourceRequestType,
 } from "@prisma/client";
 export type {
   User,
@@ -25,6 +27,7 @@ export type {
   Session,
   WorkspaceBackup,
   MetricHistory,
+  ResourceRequest,
 } from "@prisma/client";
 
 // Device types
