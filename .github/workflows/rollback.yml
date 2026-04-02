@@ -1,0 +1,195 @@
+name: Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Target version (commit SHA prefix, e.g., abc1234)'
+        required: false
+        type: string
+      steps_back:
+        description: 'Number of commits to roll back (default: 1)'
+        required: false
+        default: '1'
+        type: string
+      reason:
+        description: 'Reason for rollback'
+        required: false
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  determine-version:
+    runs-on: ubuntu-latest
+    outputs:
+      target_version: ${{ steps.version.outputs.target_version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 100  # Get enough history for rollback
+
+      - name: Determine target version
+        id: version
+        run: |
+          if [[ -n "${{ inputs.version }}" ]]; then
+            # Use specified version
+            TARGET="${{ inputs.version }}"
+            echo "Using specified version: ${TARGET}"
+          else
+            # Roll back N commits
+            STEPS="${{ inputs.steps_back || '1' }}"
+            TARGET=$(git rev-parse HEAD~${STEPS} | cut -c1-7)
+            echo "Rolling back ${STEPS} commits to: ${TARGET}"
+          fi
+
+          # Verify commit exists
+          if ! git cat-file -e ${TARGET} 2>/dev/null; then
+            echo "Error: Commit ${TARGET} not found"
+            exit 1
+          fi
+
+          echo "target_version=${TARGET}" >> $GITHUB_OUTPUT
+
+  rollback-deployment:
+    runs-on: ubuntu-latest
+    needs: determine-version
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull target image
+        run: |
+          TARGET_VERSION="${{ needs.determine-version.outputs.target_version }}"
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${TARGET_VERSION} || {
+            echo "::warning::Image not found in registry, attempting to build from source"
+          }
+
+      - name: Deploy target version
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          port: ${{ secrets.PRODUCTION_PORT || 22 }}
+          script: |
+            TARGET_VERSION="${{ needs.determine-version.outputs.target_version }}"
+            REGISTRY="${{ env.REGISTRY }}"
+            IMAGE_NAME="${{ env.IMAGE_NAME }}"
+
+            # Login to registry
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login $REGISTRY -u ${{ github.actor }} --password-stdin
+
+            # Try to pull the target image
+            if docker pull $REGISTRY/$IMAGE_NAME:$TARGET_VERSION; then
+              echo "Successfully pulled image $TARGET_VERSION"
+              docker tag $REGISTRY/$IMAGE_NAME:$TARGET_VERSION $REGISTRY/$IMAGE_NAME:latest
+            else
+              echo "Image $TARGET_VERSION not found, building from source..."
+              cd /tmp
+              rm -rf cmmb-rollback-build
+              git clone --depth 100 https://github.com/${{ github.repository }}.git cmmb-rollback-build
+              cd cmmb-rollback-build
+              git checkout $TARGET_VERSION
+
+              # Build the image
+              docker build -t $REGISTRY/$IMAGE_NAME:$TARGET_VERSION .
+
+              # Push for future use
+              docker push $REGISTRY/$IMAGE_NAME:$TARGET_VERSION
+
+              # Tag as latest
+              docker tag $REGISTRY/$IMAGE_NAME:$TARGET_VERSION $REGISTRY/$IMAGE_NAME:latest
+            fi
+
+            # Stop current containers
+            echo "Stopping current deployment..."
+            docker-compose down --timeout 60
+
+            # Start with target version
+            echo "Starting deployment with version $TARGET_VERSION..."
+            docker-compose up -d
+
+            # Clean up unused images
+            docker image prune -f
+
+      - name: Wait for startup
+        run: sleep 40
+
+      - name: Health check verification
+        id: health
+        run: |
+          MAX_RETRIES=15
+          RETRY_INTERVAL=10
+          RETRY_COUNT=0
+
+          echo "Starting health check verification..."
+
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://${{ secrets.PRODUCTION_DOMAIN }}/api/health || echo "000")
+
+            if [ "$RESPONSE" == "200" ]; then
+              echo "✅ Health check passed!"
+              echo "status=healthy" >> $GITHUB_OUTPUT
+
+              # Show detailed health info
+              echo "Health check details:"
+              curl -s https://${{ secrets.PRODUCTION_DOMAIN }}/api/health | jq .
+              exit 0
+            fi
+
+            echo "❌ Health check failed (HTTP $RESPONSE), retrying in ${RETRY_INTERVAL}s... ($RETRY_COUNT/$MAX_RETRIES)"
+            RETRY_COUNT=$((RETRY_COUNT + 1))
+            sleep $RETRY_INTERVAL
+          done
+
+          echo "❌ Health check failed after $MAX_RETRIES attempts"
+          echo "status=unhealthy" >> $GITHUB_OUTPUT
+          exit 1
+
+      - name: Record rollback
+        if: success()
+        run: |
+          echo "::notice::Rollback successful to version ${{ needs.determine-version.outputs.target_version }}"
+          if [[ -n "${{ inputs.reason }}" ]]; then
+            echo "::notice::Reason: ${{ inputs.reason }}"
+          fi
+
+      - name: Alert on failure
+        if: failure()
+        run: |
+          echo "::error::Rollback failed! Manual intervention required."
+          echo "::error::Target version: ${{ needs.determine-version.outputs.target_version }}"
+          echo "::error::Check server logs and container status."
+
+  # Optional: Notify team on rollback
+  notify:
+    runs-on: ubuntu-latest
+    needs: [determine-version, rollback-deployment]
+    if: always()
+
+    steps:
+      - name: Create rollback summary
+        run: |
+          echo "## Rollback Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Target Version | ${{ needs.determine-version.outputs.target_version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Reason | ${{ inputs.reason || 'Not specified' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | ${{ needs.rollback-deployment.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Triggered by | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Timestamp | ${{ github.event.head_commit.timestamp }} |" >> $GITHUB_STEP_SUMMARY
