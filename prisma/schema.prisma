@@ -15,6 +15,13 @@ enum Role {
   VIEWER
 }
 
+// Team-level role for members
+enum TeamRole {
+  OWNER   // Full control over team
+  ADMIN   // Can manage members and settings
+  MEMBER  // Regular team member
+}
+
 enum InstanceStatus {
   ONLINE
   OFFLINE
@@ -90,6 +97,10 @@ model User {
   acknowledgedAlerts Alert[]
   assignedTags       InstanceTag[]
 
+  // Team relations (Phase 2)
+  ownedTeams   Team[]        @relation("TeamOwner")
+  teamMembers  TeamMember[]
+
   @@map("users")
 }
 
@@ -128,6 +139,9 @@ model Instance {
   metricHistory MetricHistory[]
   agents        Agent[]
   tags          InstanceTag[]
+
+  // Team assignments (Phase 2)
+  teamAssignments InstanceAssignment[]
 
   @@map("instances")
 }
@@ -424,3 +438,60 @@ model InstanceTag {
   @@index([tagId])
   @@map("instance_tags")
 }
+
+// Team model for Phase 2 - team management
+model Team {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Team owner
+  ownerId String
+  owner   User   @relation("TeamOwner", fields: [ownerId], references: [id])
+
+  // Team members
+  members TeamMember[]
+
+  // Resources assigned to team (instances)
+  instances InstanceAssignment[]
+
+  @@index([ownerId])
+  @@map("teams")
+}
+
+// Team membership (many-to-many between Users and Teams)
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId]) // Prevent duplicate membership
+  @@index([teamId])
+  @@index([userId])
+  @@map("team_members")
+}
+
+// Instance assignment to teams (for resource allocation)
+model InstanceAssignment {
+  id         String   @id @default(cuid())
+  instanceId String
+  teamId     String
+  assignedAt DateTime @default(now())
+
+  instance Instance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([instanceId, teamId]) // Prevent duplicate assignment
+  @@index([instanceId])
+  @@index([teamId])
+  @@map("instance_assignments")
+}
+
+// Remove incorrect relation from User model

@@ -8,6 +8,7 @@ export {
   AlertStatus,
   AgentStatus,
 } from "@prisma/client";
+export { TeamRole } from "@prisma/client";
 export type {
   User,
   Instance,
@@ -25,6 +26,8 @@ export type {
   Session,
   WorkspaceBackup,
   MetricHistory,
+  Team,
+  TeamMember,
 } from "@prisma/client";
 
 // Device types
@@ -157,3 +160,16 @@ export type {
   ModelId,
 } from "./agent";
 export { AVAILABLE_MODELS, AGENT_STATUS_COLORS } from "./agent";
+
+// Team types
+export type {
+  TeamWithMembers,
+  TeamWithInstances,
+  TeamDashboardStats,
+  TeamCreateInput,
+  TeamUpdateInput,
+  TeamMemberAddInput,
+  TeamMemberRoleUpdateInput,
+  TeamPermissionResult,
+  InstanceAssignmentInput,
+} from "./team";
