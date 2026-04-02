@@ -7,6 +7,10 @@ export {
   AlertSeverity,
   AlertStatus,
   AgentStatus,
+  TaskStatus,
+  TaskPriority,
+  ResourceRequestStatus,
+  ResourceRequestType,
 } from "@prisma/client";
 export type {
   User,
@@ -25,6 +29,8 @@ export type {
   Session,
   WorkspaceBackup,
   MetricHistory,
+  Task,
+  ResourceRequest,
 } from "@prisma/client";
 
 // Device types
@@ -157,3 +163,24 @@ export type {
   ModelId,
 } from "./agent";
 export { AVAILABLE_MODELS, AGENT_STATUS_COLORS } from "./agent";
+
+// Task types
+export type {
+  TaskWithRelations,
+  TaskUserPartial,
+  TaskInstancePartial,
+  TaskCreateInput,
+  TaskUpdateInput,
+  TaskFilterOptions,
+  TaskPaginationOptions,
+  TaskListResponse,
+  TaskCompleteInput,
+} from "./task";
+export {
+  TASK_STATUS_COLORS,
+  TASK_PRIORITY_COLORS,
+  TASK_STATUS_LABELS,
+  TASK_PRIORITY_LABELS,
+  DEFAULT_TASK_LIMIT,
+  MAX_TASK_LIMIT,
+} from "./task";

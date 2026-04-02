@@ -90,6 +90,15 @@ model User {
   acknowledgedAlerts Alert[]
   assignedTags       InstanceTag[]
 
+  // Task relations
+  assignedTasks      Task[]      @relation("TaskAssignee")
+  createdTasks       Task[]      @relation("TaskCreator")
+  completedTasks     Task[]      @relation("TaskCompleter")
+
+  // Resource request relations
+  resourceRequests       ResourceRequest[]  @relation("ResourceRequester")
+  approvedResourceRequests ResourceRequest[] @relation("ResourceApprover")
+
   @@map("users")
 }
 
@@ -128,6 +137,8 @@ model Instance {
   metricHistory MetricHistory[]
   agents        Agent[]
   tags          InstanceTag[]
+  tasks         Task[]
+  resourceRequests ResourceRequest[]
 
   @@map("instances")
 }
@@ -173,6 +184,12 @@ model AuditLog {
 
   workspaceBackupId String?
   workspaceBackup   WorkspaceBackup? @relation(fields: [workspaceBackupId], references: [id])
+
+  taskId String?
+  task   Task?   @relation(fields: [taskId], references: [id])
+
+  resourceRequestId String?
+  resourceRequest   ResourceRequest? @relation(fields: [resourceRequestId], references: [id])
 
   @@map("audit_logs")
 }
@@ -392,6 +409,22 @@ model ApiKeyUsage {
   @@map("api_key_usages")
 }
 
+// Task status
+enum TaskStatus {
+  PENDING    // Task created, not started
+  IN_PROGRESS // Task being worked on
+  COMPLETED   // Task finished
+  CANCELLED   // Task cancelled
+}
+
+// Task priority
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
 // Tag model for instance tagging
 model Tag {
   id          String   @id @default(cuid())
@@ -423,4 +456,112 @@ model InstanceTag {
   @@index([instanceId])
   @@index([tagId])
   @@map("instance_tags")
+}
+
+// Task model for task assignment system
+model Task {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(PENDING)
+  priority    TaskPriority @default(MEDIUM)
+  deadline    DateTime?    // Optional deadline
+
+  // Assignment
+  assigneeId  String?
+  assignee    User?        @relation("TaskAssignee", fields: [assigneeId], references: [id])
+
+  // Creator
+  createdById String
+  createdBy   User         @relation("TaskCreator", fields: [createdById], references: [id])
+
+  // Optional relation to instance
+  instanceId  String?
+  instance    Instance?    @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  // Completion tracking
+  completedAt    DateTime?
+  completedById  String?
+  completedBy    User?     @relation("TaskCompleter", fields: [completedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  auditLogs AuditLog[]
+
+  @@index([assigneeId])
+  @@index([createdById])
+  @@index([instanceId])
+  @@index([status])
+  @@index([deadline])
+  @@map("tasks")
+}
+
+// Resource request status
+enum ResourceRequestStatus {
+  PENDING     // Initial state, awaiting review
+  APPROVED    // Approved by admin/approver
+  REJECTED    // Rejected by admin/approver
+  CANCELLED   // Cancelled by requester
+  FULFILLED   // Resource has been provisioned
+}
+
+// Resource request type
+enum ResourceRequestType {
+  INSTANCE_ACCESS  // Request access to an existing instance
+  NEW_INSTANCE     // Request a new OpenClaw instance
+  TOKEN_REQUEST    // Request API token for an instance
+  OTHER            // Other resource requests
+}
+
+// Resource request - for Phase 2 user portal
+model ResourceRequest {
+  id          String               @id @default(cuid())
+  type        ResourceRequestType  @default(OTHER)
+  status      ResourceRequestStatus @default(PENDING)
+
+  // Request details
+  title       String
+  description String               // Detailed description of what is needed
+  justification String             // Business justification for the request
+  quantity    Int                  @default(1)  // Number of resources requested
+
+  // Instance-specific fields (for INSTANCE_ACCESS or NEW_INSTANCE)
+  instanceId  String?              // Target instance for access requests
+  instance    Instance?            @relation(fields: [instanceId], references: [id])
+
+  // Configuration requested (for NEW_INSTANCE)
+  config      Json?                // Requested configuration (model, channels, etc.)
+
+  // Requester info
+  requesterId String
+  requester   User                 @relation("ResourceRequester", fields: [requesterId], references: [id])
+
+  // Approval workflow
+  approvedById   String?
+  approvedBy     User?             @relation("ResourceApprover", fields: [approvedById], references: [id])
+  approvedAt     DateTime?
+  approvalNote   String?           // Note from approver
+  rejectionReason String?          // Reason for rejection if rejected
+
+  // Fulfillment tracking
+  fulfilledAt    DateTime?
+  fulfilledById  String?
+  fulfillmentNote String?          // Note about how request was fulfilled
+
+  // Email notification tracking
+  requestNotificationSentAt  DateTime?  // When requester got confirmation
+  approvalNotificationSentAt DateTime?  // When requester got approval notification
+  rejectionNotificationSentAt DateTime? // When requester got rejection notification
+
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  auditLogs   AuditLog[]
+
+  @@index([requesterId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@map("resource_requests")
 }
